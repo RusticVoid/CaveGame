@@ -1,1 +1,1 @@
-start src/love/love.exe src
+start src/love/Windows/love.exe src

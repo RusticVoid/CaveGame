@@ -1,6 +1,5 @@
 require "world"
 require "player"
-require "cave"
 
 function love.load()
     math.randomseed(os.time())
