@@ -1,0 +1,1 @@
+start src/love/love.exe src
