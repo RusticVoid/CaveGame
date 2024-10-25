@@ -1,30 +1,57 @@
 require "world"
 require "player"
 
+function sleep(a)
+    local sec = tonumber(os.clock() + a)
+    while(os.clock() < sec) do
+    end
+end
+
 function love.load()
     math.randomseed(os.time())
-    tileSize = 5
+    tileSize = 20
 
-    world = World.new(100, 100, tileSize)
+    ScreenWidth, ScreenHeight = love.window.getMode()
+
+    world = World.new(1000, 1000, tileSize)
+
+    love.graphics.print("Generating World...", 0, 0)
+
     world:GenWorld()
-    world:GenCave(20, 1000)
+    world:GenCave(200, 1000, 10)
 
-    player = Player.new(world.worldX/2, world.worldY/2, 5)
+    player = Player.new(ScreenWidth/2, ScreenHeight/2, 5)
+    
+    spawingPlayer = true
+    while spawingPlayer do
+        spwan = math.random(1, 2)
+        spwanX = math.random(1, world.worldWidth)
+        spwanY = math.random(1, world.worldHeight)
+        if ((spwan == 1) and (world.worldData[spwanY][spwanX] == 0)) then
+            world.worldData[spwanY][spwanX] = 2
+            world.worldX = -(spwanX*tileSize)+((ScreenWidth/2))
+            world.worldY = -(spwanY*tileSize)+((ScreenHeight/2))
+            spawingPlayer = false
+        end
+    end
 end
 
 function love.update(dt)
     if love.keyboard.isDown("w") then
-        player.playerY = player.playerY - player.playerSpeed
+        world.worldY = world.worldY + player.playerSpeed
     end
     if love.keyboard.isDown("s") then
-        player.playerY = player.playerY + player.playerSpeed
+        world.worldY = world.worldY - player.playerSpeed
     end
     if love.keyboard.isDown("a") then
-        player.playerX = player.playerX - player.playerSpeed
+        world.worldX = world.worldX + player.playerSpeed
     end
     if love.keyboard.isDown("d") then
-        player.playerX = player.playerX + player.playerSpeed
-    end
+        world.worldX = world.worldX - player.playerSpeed
+    end    
+end
+
+function love.keypressed(key)
 end
 
 function love.draw()
