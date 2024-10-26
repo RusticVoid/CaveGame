@@ -4,20 +4,21 @@ require "player"
 
 function GameInit()
     print("Welcome to a Homeless Studio Game")
-    print("How big would you like the world:")
+    print("How big would you like the world (leave blank for MEDIUM default):")
     print("1: SMALL (250x250)")
     print("2: MEDIUM (500x500)")
     print("3: LARGE (1000x1000) NOT RECOMENDED!")
     mapSize = io.read()
-    print("How many caves:")
+    print("How many caves (Leave blank for 100):")
     caveCount = io.read()
-    print("How many cave iterations:")
+    print("How many cave iterations (Leave blank for 1000):")
     caveIterations = io.read()
-    print("How munch ore:")
+    print("How munch ore (Leave blank for 150):")
     oreAmount = io.read()
     print("World seed (Leave blank for random):")
     WorldSeed = io.read()
 
+    worldSize = 500
     if mapSize == "1" then
         worldSize = 250
     end
@@ -27,9 +28,20 @@ function GameInit()
     if mapSize == "3" then
         worldSize = 900
     end
-
-    WorldSeed = os.clock()
     
+    if caveCount == "" then
+        caveCount = 100
+    end
+
+    if caveIterations == "" then
+        caveIterations = 1000
+    end
+
+    if oreAmount == "" then
+        oreAmount = 150
+    end
+    
+    WorldSeed = os.clock()
     if not (WorldSeed == "") then
         WorldSeed = tonumber(WorldSeed)
     end
