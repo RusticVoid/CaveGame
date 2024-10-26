@@ -5,8 +5,8 @@ This is a survival mineing game, -to be continued-
 
 
 ### Game Todo List:
-1. Add player-wall collision
-2. Add ore gen
-3. Add mining Tools
-4. Add mining
-5. Add Machines
+1. Add more ores
+2. Add mining Tools
+3. Add mining
+4. Add Machines
+5. Add ore collision
