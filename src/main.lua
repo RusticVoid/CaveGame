@@ -28,9 +28,9 @@ function GameInit()
         worldSize = 900
     end
 
-    if WorldSeed == "" then
-        WorldSeed = os.clock()
-    else
+    WorldSeed = os.clock()
+    
+    if not (WorldSeed == "") then
         WorldSeed = tonumber(WorldSeed)
     end
 
