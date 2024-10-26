@@ -29,7 +29,7 @@ function GameInit()
     end
 
     WorldSeed = os.clock()
-
+    
     if not (WorldSeed == "") then
         WorldSeed = tonumber(WorldSeed)
     end
