@@ -9,15 +9,6 @@ function GameInit()
     print("2: MEDIUM (500x500)")
     print("3: LARGE (1000x1000) NOT RECOMENDED!")
     mapSize = io.read()
-    print("How many caves (Leave blank for 100):")
-    caveCount = io.read()
-    print("How many cave iterations (Leave blank for 1000):")
-    caveIterations = io.read()
-    print("How munch ore (Leave blank for 150):")
-    oreAmount = io.read()
-    print("World seed (Leave blank for random):")
-    WorldSeed = io.read()
-
     worldSize = 500
     if mapSize == "1" then
         worldSize = 250
@@ -28,21 +19,36 @@ function GameInit()
     if mapSize == "3" then
         worldSize = 900
     end
-    
-    if caveCount == "" then
+
+    print("How many caves (Leave blank for 100):")
+    caveCount = io.read()
+    if caveCount == nil then
         caveCount = 100
+    else
+        caveCount = tonumber(caveCount)
     end
 
-    if caveIterations == "" then
+    print("How many cave iterations (Leave blank for 1000):")
+    caveIterations = io.read()
+    if caveIterations == nil then
         caveIterations = 1000
+    else
+        caveIterations = tonumber(caveIterations)
     end
 
-    if oreAmount == "" then
+    print("How munch ore (Leave blank for 150):")
+    oreAmount = io.read()
+    if oreAmount == nil then
         oreAmount = 150
+    else
+        oreAmount = tonumber(oreAmount)
     end
-    
-    WorldSeed = os.clock()
-    if not (WorldSeed == "") then
+
+    print("World seed (Leave blank for random):")
+    WorldSeed = io.read()
+    if WorldSeed == nil then
+        WorldSeed = os.clock()
+    else
         WorldSeed = tonumber(WorldSeed)
     end
 
@@ -59,7 +65,7 @@ function GameInit()
     love.graphics.print("Generating World...", 0, 0)
 
     world:GenWorld()
-    world:GenCave(tonumber(caveCount), caveIterations, 10)
+    world:GenCave(caveCount, caveIterations, 10)
     world:GenOre(oreAmount)
 
     player = Player.new(ScreenWidth/2, ScreenHeight/2, tileSize-5, 5)
