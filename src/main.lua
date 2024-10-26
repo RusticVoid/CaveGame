@@ -22,7 +22,7 @@ function GameInit()
 
     print("How many caves (Leave blank for 100):")
     caveCount = io.read()
-    if caveCount == nil then
+    if (caveCount == nil) or (caveCount == "") then
         caveCount = 100
     else
         caveCount = tonumber(caveCount)
@@ -30,7 +30,7 @@ function GameInit()
 
     print("How many cave iterations (Leave blank for 1000):")
     caveIterations = io.read()
-    if caveIterations == nil then
+    if (caveIterations == nil) or (caveIterations == "")then
         caveIterations = 1000
     else
         caveIterations = tonumber(caveIterations)
@@ -38,7 +38,7 @@ function GameInit()
 
     print("How munch ore (Leave blank for 150):")
     oreAmount = io.read()
-    if oreAmount == nil then
+    if (oreAmount == nil) or (oreAmount == "") then
         oreAmount = 150
     else
         oreAmount = tonumber(oreAmount)
@@ -46,7 +46,7 @@ function GameInit()
 
     print("World seed (Leave blank for random):")
     WorldSeed = io.read()
-    if WorldSeed == nil then
+    if (WorldSeed == nil) or (WorldSeed == "") then
         WorldSeed = os.clock()
     else
         WorldSeed = tonumber(WorldSeed)
@@ -54,7 +54,7 @@ function GameInit()
 
     math.randomseed(WorldSeed)
     print("Seed: "..WorldSeed)
-    tileSize = 20
+    tileSize = 25
 
     ScreenWidth, ScreenHeight = love.window.getMode()
 
@@ -66,9 +66,9 @@ function GameInit()
 
     world:GenWorld()
     world:GenCave(caveCount, caveIterations, 10)
-    world:GenOre(oreAmount)
+    world:GenOre(oreAmount, 10)
 
-    player = Player.new(ScreenWidth/2, ScreenHeight/2, tileSize-5, 5)
+    player = Player.new(ScreenWidth/2, ScreenHeight/2, tileSize-10, 5)
     up = false
     down = false
     left = false
@@ -116,25 +116,6 @@ function love.update(dt)
             world.worldX = world.worldX - player.playerSpeed
         end
 
-        for y = 0, world.worldHeight do
-            for x = 0, world.worldWidth do
-                    if (world.worldX+(x*world.tileSize) > 0-tileSize) 
-                    and (world.worldX+(x*world.tileSize) < ScreenWidth) 
-                    and (world.worldY+(y*world.tileSize) > 0-tileSize) 
-                    and (world.worldY+(y*world.tileSize) < ScreenHeight) then
-                    if ((world.worldData[y][x] == 3) or (world.worldData[y][x] == 4)) then
-                        if ((player.playerX) < (world.worldX+((x*tileSize)+tileSize))) 
-                        and ((player.playerX+player.size) > (world.worldX+(x*tileSize))) 
-                        and ((player.playerY) < (world.worldY+((y*tileSize)+tileSize))) 
-                        and ((player.playerY+player.size) > (world.worldY+(y*tileSize))) then
-                            world.worldY = world.prevworldY
-                            world.worldX = world.prevworldX
-                        end
-                    end
-                end
-            end
-        end
-
         MouseX = love.mouse.getX()
         MouseY = love.mouse.getY()
         for y = 0, world.worldHeight do
@@ -147,15 +128,36 @@ function love.update(dt)
                     and ((MouseX) > (world.worldX+(x*tileSize))) 
                     and ((MouseY) < (world.worldY+((y*tileSize)+tileSize))) 
                     and ((MouseY) > (world.worldY+(y*tileSize))) then
-                        if (world.worldData[y][x] == 3) then
-                            if love.mouse.isDown(1) then
-                                world.worldData[y][x] = 0
+                        if not ((y+1 > world.worldHeight) or (y-1 < 0) or (x+1 > world.worldWidth) or (x-1 < 0)) then
+                            if ((world.worldData[y+1][x] == 2) or (world.worldData[y-1][x] == 2) or (world.worldData[y][x+1] == 2) or (world.worldData[y][x-1] == 2)) then
+                                if (world.worldData[y][x] == 3) then
+                                    if love.mouse.isDown(1) then
+                                        world.worldData[y][x] = 2
+                                    end
+                                end
+                                if (world.worldData[y][x] == 2) then
+                                    if love.mouse.isDown(2) then
+                                        world.worldData[y][x] = 3
+                                    end
+                                end
+                                for i = OreStart, OreStop do
+                                    if (world.worldData[y][x] == i) then
+                                        if love.mouse.isDown(1) then
+                                            world.worldData[y][x] = 0
+                                        end
+                                    end
+                                end
                             end
                         end
-                        if (world.worldData[y][x] == 0) then
-                            if love.mouse.isDown(2) then
-                                world.worldData[y][x] = 3
-                            end
+                    end
+
+                    if ((world.worldData[y][x] == 3) or (world.worldData[y][x] == 4)) then
+                        if ((player.playerX) < (world.worldX+((x*tileSize)+tileSize))) 
+                        and ((player.playerX+player.size) > (world.worldX+(x*tileSize))) 
+                        and ((player.playerY) < (world.worldY+((y*tileSize)+tileSize))) 
+                        and ((player.playerY+player.size) > (world.worldY+(y*tileSize))) then
+                            world.worldY = world.prevworldY
+                            world.worldX = world.prevworldX
                         end
                     end
                 end
@@ -195,7 +197,8 @@ function love.draw()
         love.graphics.print(fps)
     else
         love.graphics.setColor(1, 1, 1)
-        love.graphics.print("CHECK CONSOLE", 0, 0)
+        love.graphics.print("Generating World!", 0, 0)
+        love.graphics.print("If this takes a while check the console if its enabled", 0, 15)
         if initLoopDone == true then
             GameInit();
         end

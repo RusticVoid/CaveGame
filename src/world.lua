@@ -10,6 +10,7 @@ function World.new(worldHeight, worldWidth, tileSize)
     self.worldHeight = worldHeight
     self.worldWidth = worldWidth
     self.worldData = {}
+    self.worldShowData = {}
     self.tileSize = tileSize
     return self
 end
@@ -27,7 +28,7 @@ function World:GenWorld()
 end
 
 
-function World:GenOre(oreCount)
+function World:GenOre(oreCount, revamps)
     for i = 0, oreCount-1 do
         OreX = math.random(1, self.worldWidth-1)
         OreY = math.random(1, self.worldHeight-1)
@@ -71,6 +72,32 @@ function World:GenOre(oreCount)
             end
             
             self.worldData[OreY][OreX] = OreType
+        end
+    end
+    
+    for i = 0, revamps do
+        for y = 1, self.worldHeight-1 do
+            for x = 1, self.worldWidth-1 do
+                for i = OreStart, OreStop do
+                    if self.worldData[y][x] == 1 then  
+                        if (self.worldData[y+1][x] == i) then
+                            j = j + 1
+                        end
+                        if (self.worldData[y-1][x] == i) then
+                            j = j + 1
+                        end
+                        if (self.worldData[y][x+1] == i) then
+                            j = j + 1
+                        end
+                        if (self.worldData[y][x-1] == i) then
+                            j = j + 1
+                        end
+                    end
+                    if j == 4 then
+                        self.worldData[y][x] = i
+                    end
+                end
+            end
         end
     end
 end
@@ -151,55 +178,50 @@ function World:UpdateWorld()
             and (world.worldY+(y*world.tileSize) < ScreenHeight) then
                 j = 0
                 if self.worldData[y][x] == 1 then  
-                    if (self.worldData[y+1][x] == 0) then
+                    if (self.worldData[y+1][x] == 2) then
                         j = j + 1
                     end
-                    if (self.worldData[y-1][x] == 0) then
+                    if (self.worldData[y-1][x] == 2) then
                         j = j + 1
                     end
-                    if (self.worldData[y][x+1] == 0) then
+                    if (self.worldData[y][x+1] == 2) then
                         j = j + 1
                     end
-                    if (self.worldData[y][x-1] == 0) then
+                    if (self.worldData[y][x-1] == 2) then
                         j = j + 1
                     end
-                end
-                if j >= 3 then
-                    self.worldData[y][x] = 0
-                else
-                    if j >= 1 then 
-                        self.worldData[y][x] = 3
+                    if j >= 3 then
+                        self.worldData[y][x] = 2
+                    else
+                        if j >= 1 then 
+                            self.worldData[y][x] = 3
+                        end
                     end
                 end
             end
         end
     end
 
-    for y = 1, self.worldHeight-1 do
-        for x = 1, self.worldWidth-1 do
-            if (world.worldX+(x*world.tileSize) > 0-tileSize)
-            and (world.worldX+(x*world.tileSize) < ScreenWidth)
-            and (world.worldY+(y*world.tileSize) > 0-tileSize)
-            and (world.worldY+(y*world.tileSize) < ScreenHeight) then
-                j = 0
-                for i = OreStart, OreStop do
-                    if self.worldData[y][x] == 1 then  
-                        if (self.worldData[y+1][x] == i) then
-                            j = j + 1
-                        end
-                        if (self.worldData[y-1][x] == i) then
-                            j = j + 1
-                        end
-                        if (self.worldData[y][x+1] == i) then
-                            j = j + 1
-                        end
-                        if (self.worldData[y][x-1] == i) then
-                            j = j + 1
-                        end
-                    end
-                    if j == 4 then
-                        self.worldData[y][x] = i
-                    end
+    for y = 0, self.worldHeight do
+        for x = 0, self.worldWidth do
+            if self.worldData[y][x] == 0 then
+                if self.worldData[y+1][x] == 2 then
+                    self.worldData[y][x] = 2
+                end
+                if self.worldData[y-1][x] == 2 then
+                    self.worldData[y][x] = 2
+                end
+                if self.worldData[y][x+1] == 2 then
+                    self.worldData[y][x] = 2
+                end
+                if self.worldData[y][x-1] == 2 then
+                    self.worldData[y][x] = 2
+                end
+                if self.worldData[y-1][x-1] == 2 then
+                    self.worldData[y][x] = 2
+                end
+                if self.worldData[y+1][x+1] == 2 then
+                    self.worldData[y][x] = 2
                 end
             end
         end
@@ -214,68 +236,48 @@ function World:DrawWorld()
             and (self.worldY+(y*self.tileSize) > 0-tileSize)
             and (self.worldY+(y*self.tileSize) < ScreenHeight) then
                 love.graphics.setColor(0, 0, 0)
+                if not ((y+1 > self.worldHeight) or (y-1 < 0) or (x+1 > self.worldWidth) or (x-1 < 0)) then
+                    if debug == true then
+                        if self.worldData[y][x] == 1 then
+                            love.graphics.setColor(0, 0, 0)
+                        else
+                            love.graphics.setColor(0.3, 0.3, 0.3)
+                        end
+                    end
+                    if ((self.worldData[y+1][x] == 2) or (self.worldData[y-1][x] == 2) or (self.worldData[y][x+1] == 2) or (self.worldData[y][x-1] == 2)) then
+                        --FLOOR
+                        if self.worldData[y][x] == 0 then
+                            love.graphics.setColor(0.3, 0.3, 0.3)
+                        end
+    
+                        --NOT SEE BLOCK idk
+                        if self.worldData[y][x] == 1 then
+                            love.graphics.setColor(0, 0, 0)
+                        end
+    
+                        --SPAWN POINT / SHOW FILL / SHOW FLOOR
+                        if self.worldData[y][x] == 2 then
+                            love.graphics.setColor(0.3, 0.3, 0.3)
+                        end
+    
+                        --CAVE WALLS
+                        if self.worldData[y][x] == 3 then
+                            love.graphics.setColor(0.5, 0.5, 0.5)
+                        end
 
-                --FLOOR
-                if self.worldData[y][x] == 0 then
-                    love.graphics.setColor(0.3, 0.3, 0.3)
+                        --ORES
+                        if self.worldData[y][x] == 201 then --bluenite
+                            love.graphics.setColor(0.6, 0.6, 0.8)
+                        end
+                        if self.worldData[y][x] == 202 then --rednite
+                            love.graphics.setColor(0.8, 0.6, 0.6)
+                        end
+                    end
                 end
-
-                --NOT SEE BLOCK idk
-                if self.worldData[y][x] == 1 then
-                    love.graphics.setColor(0, 0, 0)
-                end
-
-                --SPAWN POINT
-                if self.worldData[y][x] == 2 then
-                    love.graphics.setColor(1.0, 0.0, 0.0)
-                end
-
-                --CAVE WALLS
-                if self.worldData[y][x] == 3 then
-                    love.graphics.setColor(0.5, 0.5, 0.5)
-                end
-
+                
                 --WORLD BOARDER
                 if self.worldData[y][x] == 4 then
                     love.graphics.setColor(0.2, 0.2, 0.2)
-                end
-
-                --ORES
-                if self.worldData[y][x] == 201 then --bluenite
-                    if debug == true then
-                        love.graphics.setColor(0.0, 0.0, 0.5)
-                    end
-                    
-                    if (self.worldData[y+1][x] == 0) then
-                        love.graphics.setColor(0.6, 0.6, 0.8)
-                    end
-                    if (self.worldData[y-1][x] == 0) then
-                        love.graphics.setColor(0.6, 0.6, 0.8)
-                    end
-                    if (self.worldData[y][x+1] == 0) then
-                        love.graphics.setColor(0.6, 0.6, 0.8)
-                    end
-                    if (self.worldData[y][x-1] == 0) then
-                        love.graphics.setColor(0.6, 0.6, 0.8)
-                    end
-                end
-                if self.worldData[y][x] == 202 then --rednite
-                    if debug == true then
-                        love.graphics.setColor(0.5, 0, 0)
-                    end
-                    
-                    if (self.worldData[y+1][x] == 0) then
-                        love.graphics.setColor(0.8, 0.6, 0.6)
-                    end
-                    if (self.worldData[y-1][x] == 0) then
-                        love.graphics.setColor(0.8, 0.6, 0.6)
-                    end
-                    if (self.worldData[y][x+1] == 0) then
-                        love.graphics.setColor(0.8, 0.6, 0.6)
-                    end
-                    if (self.worldData[y][x-1] == 0) then
-                        love.graphics.setColor(0.8, 0.6, 0.6)
-                    end
                 end
                 love.graphics.rectangle("fill", self.worldX+(x*self.tileSize), self.worldY+(y*self.tileSize), self.tileSize, self.tileSize)
             end
