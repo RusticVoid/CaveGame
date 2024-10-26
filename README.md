@@ -1,6 +1,4 @@
 # Welcome To CaveGame
-
-## About My Game
 This is a survival mineing game, -to be continued-
 
 ## How to run game:
