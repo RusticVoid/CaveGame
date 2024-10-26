@@ -1,5 +1,5 @@
 # Welcome To CaveGame
-This is a survival mineing game, -to be continued-
+This is a survival mining game, -to be continued-
 
 ## How to run game:
 ### Windows
