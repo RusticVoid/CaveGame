@@ -54,7 +54,7 @@ function GameInit()
 
     math.randomseed(WorldSeed)
     print("Seed: "..WorldSeed)
-    tileSize = 25
+    tileSize = 50
 
     ScreenWidth, ScreenHeight = love.window.getMode()
 
@@ -68,7 +68,7 @@ function GameInit()
     world:GenCave(caveCount, caveIterations, 10)
     world:GenOre(oreAmount, 10)
 
-    player = Player.new(ScreenWidth/2, ScreenHeight/2, tileSize-10, 5)
+    player = Player.new(ScreenWidth/2, ScreenHeight/2, tileSize-20, 2)
     up = false
     down = false
     left = false
@@ -89,6 +89,7 @@ function GameInit()
 
     fps = 0
     gameRunning = true
+    fiction = 4
 end
 
 function love.load()
@@ -97,24 +98,62 @@ function love.load()
 end
 
 function love.update(dt)
+    DeltaTime = dt
+
     if gameRunning == true then
         fps = love.timer.getFPS( )
 
         world.prevworldX = world.worldX
         world.prevworldY = world.worldY
 
-        if love.keyboard.isDown("w") then
-            world.worldY = world.worldY + player.playerSpeed
+        w = love.keyboard.isDown("w")
+        s = love.keyboard.isDown("s")
+        a = love.keyboard.isDown("a")
+        d = love.keyboard.isDown("d")
+
+        if w == true then
+            player.playerYVel = player.playerYVel + player.playerSpeed * fiction
+            if player.playerYVel > player.playerVelMax then
+                player.playerYVel = player.playerVelMax
+            end
+        else
+            if player.playerYVel > 0 then
+                player.playerYVel = player.playerYVel - player.playerSpeed * fiction
+            end
         end
-        if love.keyboard.isDown("s") then
-            world.worldY = world.worldY - player.playerSpeed
+        if s == true then
+            player.playerYVel = player.playerYVel - player.playerSpeed * fiction
+            if player.playerYVel < -player.playerVelMax then
+                player.playerYVel = -player.playerVelMax
+            end
+        else
+            if player.playerYVel < 0 then
+                player.playerYVel = player.playerYVel + player.playerSpeed * fiction
+            end
         end
-        if love.keyboard.isDown("a") then
-            world.worldX = world.worldX + player.playerSpeed
+        if a == true then
+            player.playerXVel = player.playerXVel - player.playerSpeed * fiction
+            if player.playerXVel < -player.playerVelMax then
+                player.playerXVel = -player.playerVelMax
+            end
+        else
+            if player.playerXVel < 0 then
+                player.playerXVel = player.playerXVel + player.playerSpeed * fiction
+            end
         end
-        if love.keyboard.isDown("d") then
-            world.worldX = world.worldX - player.playerSpeed
+        if d == true then
+            player.playerXVel = player.playerXVel + player.playerSpeed * fiction
+            if player.playerXVel > player.playerVelMax then
+                player.playerXVel = player.playerVelMax
+            end
+        else
+            if player.playerXVel > 0 then
+                player.playerXVel = player.playerXVel - player.playerSpeed * fiction
+            end
         end
+
+        world.worldX = world.worldX - player.playerXVel * DeltaTime
+        world.worldY = world.worldY + player.playerYVel * DeltaTime
 
         MouseX = love.mouse.getX()
         MouseY = love.mouse.getY()
@@ -151,18 +190,23 @@ function love.update(dt)
                         end
                     end
 
-                    if ((world.worldData[y][x] == 3) or (world.worldData[y][x] == 4)) then
-                        if ((player.playerX) < (world.worldX+((x*tileSize)+tileSize))) 
-                        and ((player.playerX+player.size) > (world.worldX+(x*tileSize))) 
-                        and ((player.playerY) < (world.worldY+((y*tileSize)+tileSize))) 
-                        and ((player.playerY+player.size) > (world.worldY+(y*tileSize))) then
-                            world.worldY = world.prevworldY
-                            world.worldX = world.prevworldX
+                    for i = OreStart, OreStop do
+                        if ((world.worldData[y][x] == 3) or (world.worldData[y][x] == 4) or (world.worldData[y][x] == i)) then
+                            if ((player.playerX) < (world.worldX+((x*tileSize)+tileSize)))
+                            and ((player.playerX+player.size) > (world.worldX+(x*tileSize)))
+                            and ((player.playerY) < (world.worldY+((y*tileSize)+tileSize)))
+                            and ((player.playerY+player.size) > (world.worldY+(y*tileSize))) then
+                                world.worldY = world.prevworldY
+                                world.worldX = world.prevworldX
+                            end
                         end
                     end
                 end
             end
         end
+
+        print(player.playerSpeed + 1)
+        print(-(player.playerSpeed + 1))
 
         world:UpdateWorld()
     end
@@ -195,6 +239,8 @@ function love.draw()
         world:DrawWorld()
         player:draw()
         love.graphics.print(fps)
+        love.graphics.print(player.playerXVel, 0, 15)
+        love.graphics.print(player.playerYVel, 0, 30)
     else
         love.graphics.setColor(1, 1, 1)
         love.graphics.print("Generating World!", 0, 0)

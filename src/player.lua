@@ -6,7 +6,10 @@ function Player.new(playerX, playerY, size, playerSpeed)
     self.playerX = playerX
     self.playerY = playerY
     self.size = size
-    self.playerSpeed = playerSpeed
+    self.playerSpeed = 5
+    self.playerXVel = 0
+    self.playerYVel = 0
+    self.playerVelMax = playerSpeed * 100
     return self
 end
 
