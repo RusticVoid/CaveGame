@@ -1,6 +1,7 @@
 require "utils"
 require "world"
 require "player"
+require "textures"
 
 function GameInit()
     print("Welcome to a Homeless Studio Game")
@@ -93,6 +94,7 @@ function GameInit()
 end
 
 function love.load()
+    InitTextures()
     gameRunning = false
     initLoopDone = false
 end
@@ -205,9 +207,6 @@ function love.update(dt)
             end
         end
 
-        print(player.playerSpeed + 1)
-        print(-(player.playerSpeed + 1))
-
         world:UpdateWorld()
     end
 end
@@ -239,8 +238,6 @@ function love.draw()
         world:DrawWorld()
         player:draw()
         love.graphics.print(fps)
-        love.graphics.print(player.playerXVel, 0, 15)
-        love.graphics.print(player.playerYVel, 0, 30)
     else
         love.graphics.setColor(1, 1, 1)
         love.graphics.print("Generating World!", 0, 0)

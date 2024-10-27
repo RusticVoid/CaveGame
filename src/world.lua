@@ -235,7 +235,8 @@ function World:DrawWorld()
             and (self.worldX+(x*self.tileSize) < ScreenWidth)
             and (self.worldY+(y*self.tileSize) > 0-tileSize)
             and (self.worldY+(y*self.tileSize) < ScreenHeight) then
-                love.graphics.setColor(0, 0, 0)
+                drawtile = 0
+                love.graphics.setColor(0.0, 0.0, 0.0)
                 if not ((y+1 > self.worldHeight) or (y-1 < 0) or (x+1 > self.worldWidth) or (x-1 < 0)) then
                     if debug == true then
                         if self.worldData[y][x] == 1 then
@@ -257,20 +258,20 @@ function World:DrawWorld()
     
                         --SPAWN POINT / SHOW FILL / SHOW FLOOR
                         if self.worldData[y][x] == 2 then
-                            love.graphics.setColor(0.3, 0.3, 0.3)
+                            drawtile = floorTexture
                         end
     
                         --CAVE WALLS
                         if self.worldData[y][x] == 3 then
-                            love.graphics.setColor(0.5, 0.5, 0.5)
+                            drawtile = wallTexture
                         end
 
                         --ORES
                         if self.worldData[y][x] == 201 then --bluenite
-                            love.graphics.setColor(0.6, 0.6, 0.8)
+                            drawtile = blueniteTexture
                         end
                         if self.worldData[y][x] == 202 then --rednite
-                            love.graphics.setColor(0.8, 0.6, 0.6)
+                            drawtile = redniteTexture
                         end
                     end
                 end
@@ -279,7 +280,13 @@ function World:DrawWorld()
                 if self.worldData[y][x] == 4 then
                     love.graphics.setColor(0.2, 0.2, 0.2)
                 end
-                love.graphics.rectangle("fill", self.worldX+(x*self.tileSize), self.worldY+(y*self.tileSize), self.tileSize, self.tileSize)
+
+                if drawtile == 0 then
+                    love.graphics.rectangle("fill", self.worldX+(x*self.tileSize), self.worldY+(y*self.tileSize), self.tileSize, self.tileSize)
+                else
+                    love.graphics.setColor(1, 1, 1, 1)
+                    love.graphics.draw(drawtile, self.worldX+(x*self.tileSize), self.worldY+(y*self.tileSize), 0, 3.2, 3.2)
+                end
             end
         end
     end
