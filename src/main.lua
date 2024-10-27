@@ -103,6 +103,7 @@ function love.update(dt)
     DeltaTime = dt
 
     if gameRunning == true then
+
         fps = love.timer.getFPS( )
 
         world.prevworldX = world.worldX
@@ -112,6 +113,15 @@ function love.update(dt)
         s = love.keyboard.isDown("s")
         a = love.keyboard.isDown("a")
         d = love.keyboard.isDown("d")
+        shift = love.keyboard.isDown("lshift")
+
+        if debug == true then
+            if shift == true then
+                player.playerVelMax = 100 * 100
+            else
+                player.playerVelMax = player.playerSpeed * 100
+            end
+        end
 
         if w == true then
             player.playerYVel = player.playerYVel + player.playerSpeed * fiction
@@ -192,14 +202,16 @@ function love.update(dt)
                         end
                     end
 
-                    for i = OreStart, OreStop do
-                        if ((world.worldData[y][x] == 3) or (world.worldData[y][x] == 4) or (world.worldData[y][x] == i)) then
-                            if ((player.playerX) < (world.worldX+((x*tileSize)+tileSize)))
-                            and ((player.playerX+player.size) > (world.worldX+(x*tileSize)))
-                            and ((player.playerY) < (world.worldY+((y*tileSize)+tileSize)))
-                            and ((player.playerY+player.size) > (world.worldY+(y*tileSize))) then
-                                world.worldY = world.prevworldY
-                                world.worldX = world.prevworldX
+                    if debug == false then
+                        if ((player.playerX) < (world.worldX+((x*tileSize)+tileSize)))
+                        and ((player.playerX+player.size) > (world.worldX+(x*tileSize)))
+                        and ((player.playerY) < (world.worldY+((y*tileSize)+tileSize)))
+                        and ((player.playerY+player.size) > (world.worldY+(y*tileSize))) then
+                            for i = OreStart, OreStop do
+                                if ((world.worldData[y][x] == 3) or (world.worldData[y][x] == 4) or (world.worldData[y][x] == i)) then
+                                    world.worldY = world.prevworldY
+                                    world.worldX = world.prevworldX
+                                end
                             end
                         end
                     end
@@ -237,8 +249,10 @@ function love.draw()
     if gameRunning == true then
         world:DrawWorld()
         player:draw()
-        love.graphics.print(fps)
-        love.graphics.print("Debug:"..debug, 0, 15)
+        if debug == true then
+            love.graphics.print(fps)
+            love.graphics.print("DbugeMode"..tostring(debug), 0, 15)
+        end
     else
         love.graphics.setColor(1, 1, 1)
         love.graphics.print("Generating World!", 0, 0)
