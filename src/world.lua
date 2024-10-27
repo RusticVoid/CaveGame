@@ -239,10 +239,28 @@ function World:DrawWorld()
                 love.graphics.setColor(0.0, 0.0, 0.0)
                 if not ((y+1 > self.worldHeight) or (y-1 < 0) or (x+1 > self.worldWidth) or (x-1 < 0)) then
                     if debug == true then
+                        --FLOOR
+                        if self.worldData[y][x] == 0 then
+                            drawtile = floorTexture
+                        end
+                        --NOT SEE BLOCK idk
                         if self.worldData[y][x] == 1 then
                             love.graphics.setColor(0, 0, 0)
-                        else
-                            love.graphics.setColor(0.3, 0.3, 0.3)
+                        end
+                        --SPAWN POINT / SHOW FILL / SHOW FLOOR
+                        if self.worldData[y][x] == 2 then
+                            drawtile = floorTexture
+                        end
+                        --CAVE WALLS
+                        if self.worldData[y][x] == 3 then
+                            drawtile = wallTexture
+                        end
+                        --ORES
+                        if self.worldData[y][x] == 201 then --bluenite
+                            drawtile = blueniteTexture
+                        end
+                        if self.worldData[y][x] == 202 then --rednite
+                            drawtile = redniteTexture
                         end
                     end
                     if ((self.worldData[y+1][x] == 2) or (self.worldData[y-1][x] == 2) or (self.worldData[y][x+1] == 2) or (self.worldData[y][x-1] == 2)) then
