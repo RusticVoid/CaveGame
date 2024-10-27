@@ -238,6 +238,7 @@ function love.draw()
         world:DrawWorld()
         player:draw()
         love.graphics.print(fps)
+        love.graphics.print("Debug:"..debug, 0, 15)
     else
         love.graphics.setColor(1, 1, 1)
         love.graphics.print("Generating World!", 0, 0)
