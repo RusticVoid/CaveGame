@@ -18,8 +18,8 @@ If you want to change the window resolution go into "/src/conf.lua" and change "
 ## TODO LIST'S
 ### Right Now Game Todo List:
 1. Add more ores
+### Far From Now Game Todo List:
+1. Multiplayer support
 2. Add mining Tools
 3. Add mining
 4. Add Machines
-### Far From Now Game Todo List:
-1. Multiplayer support
