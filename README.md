@@ -1,4 +1,4 @@
-# Welcome To CaveGame
+# Welcome To Subterranean
 This is a survival mining game, -to be continued-
 
 ## How to run game:
