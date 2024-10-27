@@ -6,6 +6,7 @@ This is a survival mining game, -to be continued-
 1. Unzip the file to where ever you want the game to be
 2. Insize the unzipped file there should be a "runGame.bat"
 3. Double click "runGame.bat" to start the game
+4. IF YOU GAME DOES NOT SHOW A CONSOLE THEN RUN "runGameW11.bat"
 ### Linux
 1. Unzip the file to where ever you want the game to be
 2. Insize the unzipped file there should be a "runGame.sh"
@@ -18,6 +19,5 @@ This is a survival mining game, -to be continued-
 2. Add mining Tools
 3. Add mining
 4. Add Machines
-5. Add ore collision
 ### Far From Now Game Todo List:
 1. Multiplayer support
