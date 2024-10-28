@@ -1,154 +1,105 @@
+require "chunk"
+
 World = {}
 World.__index = World
 
-function World.new(worldHeight, worldWidth, tileSize)
+function World.new(x, y, size)
     local self = setmetatable({}, World)
-    self.worldX = 0
-    self.worldY = 0
-    self.prevworldX = self.worldX
-    self.prevworldY = self.worldY
-    self.worldHeight = worldHeight
-    self.worldWidth = worldWidth
-    self.worldData = {}
-    self.worldShowData = {}
-    self.tileSize = tileSize
+    self.x = x
+    self.y = y
+    self.chunks = {}
+    self.size = size
+
+    for y = 0, self.size do
+        self.chunks[y] = {}
+        for x = 0, self.size do
+            self.chunks[y][x] = Chunk.new(x, y, 16)
+        end
+    end
+
     return self
 end
 
-function World:GenWorld()
-    for y = 0, self.worldHeight do
-        self.worldData[y] = {}
-        self.worldShowData[y] = {}
-        for x = 0, self.worldWidth do
-            self.worldData[y][x] = wallTile
-            self.worldShowData[y][x] = wallTile
-            if (x == 0) or (x == world.worldWidth) or (y == 0) or (y == world.worldHeight) then
-                self.worldData[y][x] = boarderTile
-            end
-        end
-    end
-end
+function World:genCave(caveAmount, interations)
+    for i = 0, caveAmount do
+        CaveChunkX = math.random(0, self.size)
+        CaveChunkY = math.random(0, self.size)
 
-function World:GenCave(caveAmount, iterations, revamps)
-    for i = 0, caveAmount-1 do
-        CaveX = math.random(1, self.worldWidth-1)
-        CaveY = math.random(1, self.worldHeight-1)
+        CaveX = math.random(0, self.chunks[CaveChunkY][CaveChunkX].size)
+        CaveY = math.random(0, self.chunks[CaveChunkY][CaveChunkX].size)
 
-        for j = 0, iterations-1 do
+        self.chunks[CaveChunkY][CaveChunkX].chunkData[CaveY][CaveX] = floorTile
+
+        for i = 0, interations do
             decision = math.random(1, 4)
             
             if decision == 1 then
                 CaveX = CaveX + 1;
-                if (CaveX > world.worldWidth-1) then
-                    CaveX = CaveX - 1;
-                end
             end
             if decision == 2 then
                 CaveX = CaveX - 1;
-                if (CaveX < 1) then
-                    CaveX = CaveX + 1;
-                end
             end
             if decision == 3 then
                 CaveY = CaveY + 1;
-                if (CaveY > world.worldHeight-1) then
-                    CaveY = CaveY - 1;
-                end
             end
             if decision == 4 then
                 CaveY = CaveY - 1;
-                if (CaveY < 1) then
-                    CaveY = CaveY + 1;
-                end
             end
 
-            self.worldData[CaveY][CaveX] = FloorTile
-        end
-    end
-
-    for i = 0, revamps do
-        for y = 1, self.worldHeight-1 do
-            for x = 1, self.worldWidth-1 do
-                if self.worldData[y][x] == wallTile then
-                    j = 0
-                    if self.worldData[y+1][x] == FloorTile then
-                        j = j + 1
-                    end
-                    if self.worldData[y-1][x] == FloorTile then
-                        j = j + 1
-                    end
-                    if self.worldData[y][x+1] == FloorTile then
-                        j = j + 1
-                    end
-                    if self.worldData[y][x-1] == FloorTile then
-                        j = j + 1
-                    end
-
-                    if j >= 3 then
-                        self.worldData[y][x] = FloorTile
-                    end
+            if CaveX < 0 then
+                CaveChunkX = CaveChunkX - 1
+                if CaveChunkX < 0 then
+                    CaveChunkX = CaveChunkX + 1
+                else
+                    CaveX = self.chunks[CaveChunkY][CaveChunkX].size
                 end
             end
-        end
-    end
-end
-
-function World:GenOre(oreCount)
-    for i = 0, oreCount-1 do
-        OreX = math.random(1, self.worldWidth-1)
-        OreY = math.random(1, self.worldHeight-1)
-        OreStart = 1
-        OreStop = #ores
-        OreType = math.random(OreStart, OreStop)
-
-        iterations = math.random(20, 50)
-        for j = 0, iterations-1 do
-            decision = math.random(1, 4)
-            if decision == 1 then
-                OreX = OreX + 1;
-                if (OreX > world.worldWidth-1) then
-                    OreX = OreX - 1;
+            if CaveY < 0 then
+                CaveChunkY = CaveChunkY - 1
+                if CaveChunkY < 0 then
+                    CaveChunkY = CaveChunkY + 1
+                    CaveY = 0
+                else
+                    CaveY = self.chunks[CaveChunkY][CaveChunkX].size
                 end
             end
-            if decision == 2 then
-                OreX = OreX - 1;
-                if (OreX < 1) then
-                    OreX = OreX + 1;
+            if CaveX > self.chunks[CaveChunkY][CaveChunkX].size then
+                CaveChunkX = CaveChunkX + 1
+                if CaveChunkX > world.size then
+                    CaveChunkX = CaveChunkX - 1
+                else
+                    CaveX = 0
                 end
             end
-            if decision == 3 then
-                OreY = OreY + 1;
-                if (OreY > world.worldHeight-1) then
-                    OreY = OreY - 1;
+            if CaveY > self.chunks[CaveChunkY][CaveChunkX].size then
+                CaveChunkY = CaveChunkY + 1
+                if CaveChunkY > world.size then
+                    CaveChunkY = CaveChunkY - 1
+                    CaveY = self.chunks[CaveChunkY][CaveChunkX].size
+                else
+                    CaveY = 0
                 end
             end
-            if decision == 4 then
-                OreY = OreY - 1;
-                if (OreY < 1) then
-                    OreY = OreY + 1;
-                end
-            end
-            
-            self.worldData[OreY][OreX] = ores[OreType]
+            self.chunks[CaveChunkY][CaveChunkX].chunkData[CaveY][CaveX] = floorTile
         end
     end
 end
 
-function World:GenBiome(biomeCount)
+function World:update()
+    for y = 0, self.size do
+        for x = 0, self.size do
+            if self.chunks[y][x]:inWindow(self.x, self.y) then
+                self.chunks[y][x]:update()
+            end
+        end
+    end
 end
 
-function World:UpdateWorld()
-end
-
-function World:DrawWorld()
-    for y = 0, self.worldHeight do
-        for x = 0, self.worldWidth do
-            if (self.worldX+(x*self.tileSize) > 0-tileSize)
-            and (self.worldX+(x*self.tileSize) < ScreenWidth)
-            and (self.worldY+(y*self.tileSize) > 0-tileSize)
-            and (self.worldY+(y*self.tileSize) < ScreenHeight) then
-                love.graphics.setColor(1, 1, 1, 1)
-                love.graphics.draw(self.worldData[y][x].texture, self.worldX+(x*self.tileSize), self.worldY+(y*self.tileSize), 0, 3.2, 3.2)
+function World:draw()
+    for y = 0, self.size do
+        for x = 0, self.size do
+            if self.chunks[y][x]:inWindow(self.x, self.y) then
+                self.chunks[y][x]:draw(self.x, self.y)
             end
         end
     end
