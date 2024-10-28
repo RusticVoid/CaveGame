@@ -3,10 +3,10 @@ require "chunk"
 World = {}
 World.__index = World
 
-function World.new(x, y, size)
+function World.new(size)
     local self = setmetatable({}, World)
-    self.x = x
-    self.y = y
+    self.x = -(size*16*tileSize)/2
+    self.y = -(size*16*tileSize)/2
     self.chunks = {}
     self.size = size
 
