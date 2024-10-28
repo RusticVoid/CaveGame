@@ -2,6 +2,7 @@ require "utils"
 require "world"
 require "player"
 require "textures"
+require "tile"
 
 function GameInit()
     print("Welcome to a Homeless Studio Game")
@@ -45,6 +46,14 @@ function GameInit()
         oreAmount = tonumber(oreAmount)
     end
 
+    print("How many biome areas (Leave blank for 4):")
+    bimomeAmount = io.read()
+    if (bimomeAmount == nil) or (bimomeAmount == "") then
+        bimomeAmount = 4
+    else
+        bimomeAmount = tonumber(bimomeAmount)
+    end
+
     print("World seed (Leave blank for random):")
     WorldSeed = io.read()
     if (WorldSeed == nil) or (WorldSeed == "") then
@@ -67,8 +76,8 @@ function GameInit()
 
     world:GenWorld()
     world:GenCave(caveCount, caveIterations, 10)
-    world:GenOre(oreAmount, 10)
-    world:GenBiome(2)
+    world:GenOre(oreAmount)
+    world:GenBiome(bimomeAmount)
 
     player = Player.new(ScreenWidth/2, ScreenHeight/2, tileSize-20, 2)
     up = false
@@ -81,7 +90,7 @@ function GameInit()
         spwan = math.random(1, 2)
         spwanX = math.random(1, world.worldWidth)
         spwanY = math.random(1, world.worldHeight)
-        if ((spwan == 1) and (world.worldData[spwanY][spwanX] == 0)) then
+        if ((spwan == 1) and (world.worldData[spwanY][spwanX] == FloorTile)) then
             world.worldShowData[spwanY][spwanX] = 2
             world.worldX = -(spwanX*tileSize)+((ScreenWidth/2))
             world.worldY = -(spwanY*tileSize)+((ScreenHeight/2))
@@ -96,6 +105,22 @@ end
 
 function love.load()
     InitTextures()
+
+    FloorTile = Tile.new(tileSize, floorTexture, "floor", false)
+    wallTile = Tile.new(tileSize, wallTexture, "wall", true)
+
+    redniteTile = Tile.new(tileSize, redniteTexture, "ore", true)
+    blueniteTile = Tile.new(tileSize, blueniteTexture, "ore", true)
+
+    ores = {redniteTile, blueniteTile}
+
+    greenGroundTile = Tile.new(tileSize, greenGroundTexture, "floor", false)
+
+    redGroundTile = Tile.new(tileSize, redGroundTexture, "floor", false)
+    redWallTile = Tile.new(tileSize, redWallTexture, "floor", false)
+
+    boarderTile = Tile.new(tileSize, wallTexture, "wall", false)
+
     gameRunning = false
     initLoopDone = false
 end
@@ -180,41 +205,6 @@ function love.update(dt)
                     and ((MouseX) > (world.worldX+(x*tileSize)))
                     and ((MouseY) < (world.worldY+((y*tileSize)+tileSize)))
                     and ((MouseY) > (world.worldY+(y*tileSize))) then
-                        if not ((y+1 > world.worldHeight) or (y-1 < 0) or (x+1 > world.worldWidth) or (x-1 < 0)) then
-                            if ((world.worldShowData[y+1][x] == 2) or (world.worldShowData[y-1][x] == 2) or (world.worldShowData[y][x+1] == 2) or (world.worldShowData[y][x-1] == 2)) then
-                                if (world.worldData[y][x] == 3) then
-                                    if love.mouse.isDown(1) then
-                                        world.worldData[y][x] = 0
-                                    end
-                                end
-                                if (world.worldData[y][x] == 0) then
-                                    if love.mouse.isDown(2) then
-                                        world.worldData[y][x] = 3
-                                    end
-                                end
-                                for i = OreStart, OreStop do
-                                    if (world.worldData[y][x] == i) then
-                                        if love.mouse.isDown(1) then
-                                            world.worldData[y][x] = 0
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-
-                    if debug == false then
-                        if ((player.playerX) < (world.worldX+((x*tileSize)+tileSize)))
-                        and ((player.playerX+player.size) > (world.worldX+(x*tileSize)))
-                        and ((player.playerY) < (world.worldY+((y*tileSize)+tileSize)))
-                        and ((player.playerY+player.size) > (world.worldY+(y*tileSize))) then
-                            for i = OreStart, OreStop do
-                                if ((world.worldData[y][x] == 3) or (world.worldData[y][x] == 4) or (world.worldData[y][x] == i)) then
-                                    world.worldY = world.prevworldY
-                                    world.worldX = world.prevworldX
-                                end
-                            end
-                        end
                     end
                 end
             end
@@ -231,11 +221,11 @@ function love.keypressed(key)
         end
         if debug == true then
             if (key == "l") then
-                tileSize = tileSize + 1
+                tileSize = 1
                 world.tileSize = tileSize
             end
             if (key == "k") then
-                tileSize = tileSize - 1
+                tileSize = 50
                 world.tileSize = tileSize
             end
             if (key == "j") then
@@ -255,7 +245,9 @@ function love.draw()
         player:draw()
         if debug == true then
             love.graphics.print(fps)
-            love.graphics.print("DbugeMode"..tostring(debug), 0, 15)
+            love.graphics.print("DbugeMode:"..tostring(debug), 0, 15)
+            love.graphics.print("Player X:"..-math.floor((world.worldX/tileSize)-(player.playerX/tileSize)), 0, 30)
+            love.graphics.print("Player Y:"..-math.floor((world.worldY/tileSize)-(player.playerY/tileSize)), 0, 45)
         end
     else
         love.graphics.setColor(1, 1, 1)
