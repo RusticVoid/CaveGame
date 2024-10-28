@@ -1,4 +1,4 @@
-# Welcome To CaveGame
+# Welcome To Subterranean
 This is a survival mining game, -to be continued-
 
 ## How to run game:
@@ -14,12 +14,3 @@ This is a survival mining game, -to be continued-
 4. Run "./runGame.sh" to start the game
 ### How to change window resolution
 If you want to change the window resolution go into "/src/conf.lua" and change "t.window.width = 800" and "t.window.height = 600" to the window size you want.
-
-## TODO LIST'S
-### Right Now Game Todo List:
-1. Add more ores
-2. Add mining Tools
-3. Add mining
-4. Add Machines
-### Far From Now Game Todo List:
-1. Multiplayer support
