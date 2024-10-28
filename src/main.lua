@@ -68,6 +68,7 @@ function GameInit()
     world:GenWorld()
     world:GenCave(caveCount, caveIterations, 10)
     world:GenOre(oreAmount, 10)
+    world:GenBiome(2)
 
     player = Player.new(ScreenWidth/2, ScreenHeight/2, tileSize-20, 2)
     up = false
@@ -81,7 +82,7 @@ function GameInit()
         spwanX = math.random(1, world.worldWidth)
         spwanY = math.random(1, world.worldHeight)
         if ((spwan == 1) and (world.worldData[spwanY][spwanX] == 0)) then
-            world.worldData[spwanY][spwanX] = 2
+            world.worldShowData[spwanY][spwanX] = 2
             world.worldX = -(spwanX*tileSize)+((ScreenWidth/2))
             world.worldY = -(spwanY*tileSize)+((ScreenHeight/2))
             spawingPlayer = false
@@ -171,22 +172,22 @@ function love.update(dt)
         MouseY = love.mouse.getY()
         for y = 0, world.worldHeight do
             for x = 0, world.worldWidth do
-                if (world.worldX+(x*world.tileSize) > 0-tileSize) 
-                and (world.worldX+(x*world.tileSize) < ScreenWidth) 
-                and (world.worldY+(y*world.tileSize) > 0-tileSize) 
+                if (world.worldX+(x*world.tileSize) > 0-tileSize)
+                and (world.worldX+(x*world.tileSize) < ScreenWidth)
+                and (world.worldY+(y*world.tileSize) > 0-tileSize)
                 and (world.worldY+(y*world.tileSize) < ScreenHeight) then
-                    if ((MouseX) < (world.worldX+((x*tileSize)+tileSize))) 
-                    and ((MouseX) > (world.worldX+(x*tileSize))) 
-                    and ((MouseY) < (world.worldY+((y*tileSize)+tileSize))) 
+                    if ((MouseX) < (world.worldX+((x*tileSize)+tileSize)))
+                    and ((MouseX) > (world.worldX+(x*tileSize)))
+                    and ((MouseY) < (world.worldY+((y*tileSize)+tileSize)))
                     and ((MouseY) > (world.worldY+(y*tileSize))) then
                         if not ((y+1 > world.worldHeight) or (y-1 < 0) or (x+1 > world.worldWidth) or (x-1 < 0)) then
-                            if ((world.worldData[y+1][x] == 2) or (world.worldData[y-1][x] == 2) or (world.worldData[y][x+1] == 2) or (world.worldData[y][x-1] == 2)) then
+                            if ((world.worldShowData[y+1][x] == 2) or (world.worldShowData[y-1][x] == 2) or (world.worldShowData[y][x+1] == 2) or (world.worldShowData[y][x-1] == 2)) then
                                 if (world.worldData[y][x] == 3) then
                                     if love.mouse.isDown(1) then
-                                        world.worldData[y][x] = 2
+                                        world.worldData[y][x] = 0
                                     end
                                 end
-                                if (world.worldData[y][x] == 2) then
+                                if (world.worldData[y][x] == 0) then
                                     if love.mouse.isDown(2) then
                                         world.worldData[y][x] = 3
                                     end
@@ -240,6 +241,9 @@ function love.keypressed(key)
             if (key == "j") then
                 world.worldX = 0
                 world.worldY = 0
+            end
+            if (key == "r") then
+                InitTextures()
             end
         end
     end
