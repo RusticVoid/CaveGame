@@ -4,23 +4,71 @@ require "tile"
 require "player"
 
 function love.load()
+    
     windowWidth, windowHeight = love.window.getMode()
-    math.randomseed(os.clock())
     fps = 0
     debug = false
+    WorldSize = 64
 
+    print("Welcome To Subterranean By Homeless Studios")
+    print("Develper: RusticVoid")
+    print("Writer: DogWoodDan, Large_man")
+    print("Soon to be artist: Orange_Aide")
+    print("Right now artist: RusticVoid")
+    print("")
+    print("Pick a number for an option")
+    print("1: Start")
+    print("2: Quit")
+    option = io.read()
+
+    if option == "1" then
+        print("")
+        print("World Size:")
+        print("1: Small (64x64 in chunks, 1024x1024 in tiles)")
+        print("2: Medium (128x128 in chunks, 2048x2048 in tiles)")
+        print("3: Large (256x256 in chunks, 4096x4096 in tiles)")
+        option = io.read()
+        if option == "1" then
+            WorldSize = 64
+        end
+        if option == "2" then
+            WorldSize = 128
+        end
+        if option == "3" then
+            WorldSize = 256
+        end
+    else
+        print("Give it a second!")
+        love.event.quit()
+    end
+
+    print("")
+    print("STARTING WORLD GEN!")
+
+    print("SETTING RANDOM SEED!")
+    math.randomseed(os.clock())
+
+    print("SETTING TILE SIZE!")
     tileSize = 30
 
+    print("INITIALIZING TEXTURES!")
     InitTextures()
 
+    print("INITIALIZING TILES!")
     wallTile = Tile.new(wallTexture)
     floorTile = Tile.new(floorTexture)
 
-    world = World.new(63)
+    print("CREATING WORLD!")
+    world = World.new(WorldSize)
+    world:genWorld()
+
+    print("GENERATING CAVES!")
+    world:genCave(500, 2000)
     
+    print("SPAWING PLAYER!")
     player = Player.new((windowWidth/2)-(tileSize/1.5), (windowHeight/2)-(tileSize/1.5), 8)
 
-    world:genCave(100, 2000)
+    print("STARTING WORLD GEN!")
 end
 
 function love.update(dt)
@@ -51,6 +99,7 @@ function love.keypressed(key)
     end
     if debug == true then
         if key == "f2" then
+
         end
     end
 end

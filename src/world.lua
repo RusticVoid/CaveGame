@@ -9,15 +9,16 @@ function World.new(size)
     self.y = -(size*16*tileSize)/2
     self.chunks = {}
     self.size = size
+    return self
+end
 
+function World:genWorld()
     for y = 0, self.size do
         self.chunks[y] = {}
         for x = 0, self.size do
             self.chunks[y][x] = Chunk.new(x, y, 16)
         end
     end
-
-    return self
 end
 
 function World:genCave(caveAmount, interations)
