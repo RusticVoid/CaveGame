@@ -13,9 +13,9 @@ function World.new(size)
 end
 
 function World:genWorld()
-    for y = 0, self.size do
+    for y = 1, self.size do
         self.chunks[y] = {}
-        for x = 0, self.size do
+        for x = 1, self.size do
             self.chunks[y][x] = Chunk.new(x, y, 16)
         end
     end
@@ -23,11 +23,11 @@ end
 
 function World:genCave(caveAmount, interations)
     for i = 0, caveAmount do
-        CaveChunkX = math.random(0, self.size)
-        CaveChunkY = math.random(0, self.size)
+        CaveChunkX = math.random(1, self.size)
+        CaveChunkY = math.random(1, self.size)
 
-        CaveX = math.random(0, self.chunks[CaveChunkY][CaveChunkX].size)
-        CaveY = math.random(0, self.chunks[CaveChunkY][CaveChunkX].size)
+        CaveX = math.random(1, self.chunks[CaveChunkY][CaveChunkX].size)
+        CaveY = math.random(1, self.chunks[CaveChunkY][CaveChunkX].size)
 
         self.chunks[CaveChunkY][CaveChunkX].chunkData[CaveY][CaveX] = floorTile
 
@@ -47,19 +47,19 @@ function World:genCave(caveAmount, interations)
                 CaveY = CaveY - 1;
             end
 
-            if CaveX < 0 then
+            if CaveX < 1 then
                 CaveChunkX = CaveChunkX - 1
-                if CaveChunkX < 0 then
+                if CaveChunkX < 1 then
                     CaveChunkX = CaveChunkX + 1
                 else
                     CaveX = self.chunks[CaveChunkY][CaveChunkX].size
                 end
             end
-            if CaveY < 0 then
+            if CaveY < 1 then
                 CaveChunkY = CaveChunkY - 1
-                if CaveChunkY < 0 then
+                if CaveChunkY < 1 then
                     CaveChunkY = CaveChunkY + 1
-                    CaveY = 0
+                    CaveY = 1
                 else
                     CaveY = self.chunks[CaveChunkY][CaveChunkX].size
                 end
@@ -69,7 +69,7 @@ function World:genCave(caveAmount, interations)
                 if CaveChunkX > world.size then
                     CaveChunkX = CaveChunkX - 1
                 else
-                    CaveX = 0
+                    CaveX = 1
                 end
             end
             if CaveY > self.chunks[CaveChunkY][CaveChunkX].size then
@@ -78,27 +78,31 @@ function World:genCave(caveAmount, interations)
                     CaveChunkY = CaveChunkY - 1
                     CaveY = self.chunks[CaveChunkY][CaveChunkX].size
                 else
-                    CaveY = 0
+                    CaveY = 1
                 end
             end
             self.chunks[CaveChunkY][CaveChunkX].chunkData[CaveY][CaveX] = floorTile
+
+            if self.chunks[CaveChunkY][CaveChunkX].chunkData[CaveY][CaveX] == floorTile then
+                self.chunks[CaveChunkY][CaveChunkX].chunkData[CaveY][CaveX] = floorTile
+            end
         end
     end
 end
 
 function World:update()
-    for y = 0, self.size do
-        for x = 0, self.size do
+    for y = 1, self.size do
+        for x = 1, self.size do
             if self.chunks[y][x]:inWindow(self.x, self.y) then
-                self.chunks[y][x]:update()
+                self.chunks[y][x]:update(self.x, self.y)
             end
         end
     end
 end
 
 function World:draw()
-    for y = 0, self.size do
-        for x = 0, self.size do
+    for y = 1, self.size do
+        for x = 1, self.size do
             if self.chunks[y][x]:inWindow(self.x, self.y) then
                 self.chunks[y][x]:draw(self.x, self.y)
             end

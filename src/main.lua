@@ -1,3 +1,4 @@
+require "utils"
 require "textures"
 require "world"
 require "tile"
@@ -55,9 +56,9 @@ function love.load()
     InitTextures()
 
     print("INITIALIZING TILES!")
-    wallTile = Tile.new(wallTexture)
-    floorTile = Tile.new(floorTexture)
-    spawnTile = Tile.new(redGroundTexture)
+    wallTile = Tile.new(wallTexture, true, true)
+    floorTile = Tile.new(floorTexture, false, false)
+    spawnTile = Tile.new(redGroundTexture, false, false)
 
     print("CREATING WORLD!")
     world = World.new(WorldSize)
@@ -69,17 +70,17 @@ function love.load()
     print("SPAWING PLAYER!")
     spawned = false
     while spawned == false do
-        ChunkX = math.random(0, world.size)
-        ChunkY = math.random(0, world.size)
+        ChunkX = math.random(1, world.size)
+        ChunkY = math.random(1, world.size)
         ChunkSize = world.chunks[ChunkX][ChunkY].size
-        SpawnX = math.random(0, ChunkSize)
-        SpawnY = math.random(0, ChunkSize)
+        SpawnX = math.random(1, ChunkSize)
+        SpawnY = math.random(1, ChunkSize)
 
         if world.chunks[ChunkY][ChunkX].chunkData[SpawnY][SpawnX] == floorTile then
             world.chunks[ChunkY][ChunkX].chunkData[SpawnY][SpawnX] = spawnTile
             spawned = true
-            world.x = -((((ChunkX*ChunkSize)*tileSize)+(SpawnX*tileSize)-(windowWidth/2)+(tileSize/1.5)))
-            world.y = -((((ChunkY*ChunkSize)*tileSize)+(SpawnY*tileSize)-(windowHeight/2)+(tileSize/1.5)))
+            world.x = -((((ChunkX*ChunkSize)*tileSize)+(SpawnX*tileSize)-(windowWidth/2)))
+            world.y = -((((ChunkY*ChunkSize)*tileSize)+(SpawnY*tileSize)-(windowHeight/2)))
         end
     end
 
@@ -91,8 +92,13 @@ end
 function love.update(dt)
     DeltaTime = dt
     fps = love.timer.getFPS()
+    MouseX = love.mouse.getX()
+    MouseY = love.mouse.getY()
 
     windowWidth, windowHeight = love.window.getMode()
+
+    prevPlayerX = world.x
+    prevPlayerY = world.y 
 
     if love.keyboard.isDown("w") then
         world.y = world.y + player.speed * DeltaTime
