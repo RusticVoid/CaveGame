@@ -13,4 +13,5 @@ This is a survival mining game, -to be continued-
 3. Open folder where "runGame.sh" is in your terminal
 4. Run "./runGame.sh" to start the game
 ### How to change window resolution
+WARNING THIS IS NOT RECOMENDED IF YOU ARE RUNNING LOW END HARDWARE
 If you want to change the window resolution go into "/src/conf.lua" and change "t.window.width = 800" and "t.window.height = 600" to the window size you want.
