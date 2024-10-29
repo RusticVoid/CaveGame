@@ -2,8 +2,7 @@
 This is a survival mining game, -to be continued-
 
 ## What am I working on right now
-Right now Im working on rewriteing the whole engine back up to Pre-Alpha-v0.8 once im done rewriting the engine to the previouse state I will change the stage of develpment to Alpha-v0.1 once the engine is rewriten back to how it was before.
-Since rewriting the engine I have been able to get 4 times as much prefromance then the last engine by being smart and using a chunk system, by the way if your making a game similar to this one I highly recomend using some time of chunk system it really helps prefromance a lot.
+Right now I'm working on rewriting the whole engine back up to Pre-Alpha-v0.8. Once I'm done rewriting the engine to its previous state I will change the stage of development to Alpha-v0.1. Since rewriting the engine I have been able to get 4 times as much performance then the last engine by being smart and using a chunk system, by the way if you're making a game similar to this one I highly recommend using some type of chunk system it really helps performance a lot.
 
 ## How to run game:
 ### Windows
