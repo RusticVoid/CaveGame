@@ -33,7 +33,6 @@ function Chunk:update(WorldX, WorldY)
                 end
                 if collid(player.x, player.y, player.size, player.size, (WorldX+self.x*tileSize)+(x-1)*tileSize, (WorldY+self.y*tileSize)+(y-1)*tileSize, tileSize, tileSize) then
                     if self.chunkData[y][x].hasCollision == true then
-                        print(self.chunkData[y][x].hasCollision)
                         world.x = prevPlayerX
                         world.y = prevPlayerY
                     end
