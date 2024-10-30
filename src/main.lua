@@ -3,12 +3,19 @@ require "textures"
 require "world"
 require "tile"
 require "player"
+require "command"
 
 function love.load()
     
     windowWidth, windowHeight = love.window.getMode()
+
     fps = 0
     debug = false
+    commandMode = false
+    chunkMode = false
+    collisionMode = false
+    textBox = {}
+
     WorldSize = 64
 
     print("Welcome To Subterranean By Homeless Studios")
@@ -99,18 +106,19 @@ function love.update(dt)
 
     prevPlayerX = world.x
     prevPlayerY = world.y 
-
-    if love.keyboard.isDown("w") then
-        world.y = world.y + player.speed * DeltaTime
-    end
-    if love.keyboard.isDown("a") then
-        world.x = world.x + player.speed * DeltaTime
-    end
-    if love.keyboard.isDown("s") then
-        world.y = world.y - player.speed * DeltaTime
-    end
-    if love.keyboard.isDown("d") then
-        world.x = world.x - player.speed * DeltaTime
+    if commandMode == false then
+        if love.keyboard.isDown("w") then
+            world.y = world.y + player.speed * DeltaTime
+        end
+        if love.keyboard.isDown("a") then
+            world.x = world.x + player.speed * DeltaTime
+        end
+        if love.keyboard.isDown("s") then
+            world.y = world.y - player.speed * DeltaTime
+        end
+        if love.keyboard.isDown("d") then
+            world.x = world.x - player.speed * DeltaTime
+        end
     end
 
     world:update()
@@ -122,8 +130,17 @@ function love.keypressed(key)
     end
     if debug == true then
         if key == "f2" then
-
+            chunkMode = not chunkMode
         end
+        if key == "f3" then
+            collisionMode = not collisionMode
+        end
+        if key == "/" then
+            commandMode = true
+        end
+    end
+    if commandMode == true then
+        textBoxInput(key)
     end
 end
 
@@ -133,6 +150,13 @@ function love.draw()
     if debug == true then
         love.graphics.print("Player X:"..-math.floor(((world.x-player.x)/tileSize)/16)-1, 0, 15)
         love.graphics.print("Player Y:"..-math.floor(((world.y-player.y)/tileSize)/16)-1, 0, 30)
+
+        if commandMode == true then
+            love.graphics.setColor(0.5, 0.5, 0.5, 0.5)
+            love.graphics.rectangle("fill", 0, windowHeight-26, windowWidth, 17)
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.print(textBox, 0, windowHeight-25)
+        end
     end
     player:draw()
 end

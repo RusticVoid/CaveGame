@@ -48,7 +48,9 @@ function Chunk:draw(WorldX, WorldY)
             if self.chunkData[y][x]:inWindow((WorldX+self.x*tileSize), (WorldY+self.y*tileSize), x-1, y-1) then
                 self.chunkData[y][x]:draw((WorldX+self.x*tileSize), (WorldY+self.y*tileSize), x-1, y-1)
                 if debug == true then
-                    love.graphics.rectangle("line", (WorldX+self.x*tileSize), (WorldY+self.y*tileSize), (self.size)*tileSize, (self.size)*tileSize)
+                    if chunkMode == true then
+                        love.graphics.rectangle("line", (WorldX+self.x*tileSize), (WorldY+self.y*tileSize), (self.size)*tileSize, (self.size)*tileSize)
+                    end
                 end
             end
         end

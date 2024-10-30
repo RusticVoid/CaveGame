@@ -11,5 +11,6 @@ function Player.new(x, y, speed)
 end
 
 function Player:draw()
+    love.graphics.setColor(1, 1, 1, 1)
     love.graphics.rectangle("fill", self.x, self.y, self.size, self.size)
 end
