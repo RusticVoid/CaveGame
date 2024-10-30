@@ -1,5 +1,3 @@
---MAKE COLLISION STUFF OR SOMTHING
-
 function collid(x1, y1, sizeX1, sizeY1, x2, y2, sizeX2, sizeY2)
     collided = false
 
@@ -11,6 +9,20 @@ function collid(x1, y1, sizeX1, sizeY1, x2, y2, sizeX2, sizeY2)
     end
 
     return collided
+end
+
+function parseListString(stringList)
+    local parsedCommand = {""}
+    j = 1
+    for i = 1, #stringList do
+        if stringList[i] == " " then
+            j = j + 1
+            parsedCommand[j] = ""
+        else
+            parsedCommand[j] = parsedCommand[j]..stringList[i]
+        end
+    end
+    return parsedCommand
 end
 
 -- ADD SLEEP FUNCTION PROBABLY NEED
