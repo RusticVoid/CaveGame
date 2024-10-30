@@ -2,7 +2,7 @@
 This is a survival mining game, -to be continued-
 
 ## What am I working on right now
-Right now I'm working on rewriting the whole engine back up to Pre-Alpha-v0.8. Once I'm done rewriting the engine to its previous state I will change the stage of development to Alpha-v0.1. Since rewriting the engine I have been able to get 4 times as much performance then the last engine by being smart and using a chunk system, by the way if you're making a game similar to this one I highly recommend using some type of chunk system it really helps performance a lot.
+I've gotten done rewriting the engine and I'm working on an inventory system right now. I'm planning on getting the base game mechanics down for right now then I'll start adding more things like ores, biomes, structures, and more. I've also made an itch.io page you can find the here: https://homelessstudios.itch.io/subterranean
 
 ## How to run game:
 ### Windows
