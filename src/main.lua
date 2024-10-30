@@ -125,6 +125,14 @@ function love.update(dt)
 end
 
 function love.keypressed(key)
+    if key == "escape" then
+        if InventoryOpen == true then
+            InventoryOpen = false
+        end
+    end
+    if key == "i" then
+        InventoryOpen = not InventoryOpen
+    end
     if key == "f1" then
         debug = not debug
     end
