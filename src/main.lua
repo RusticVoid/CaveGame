@@ -16,6 +16,7 @@ function love.load()
     commandMode = false
     chunkMode = false
     collisionMode = false
+    noclip = false
     textBox = {}
 
     WorldSize = 64
@@ -81,6 +82,11 @@ function love.load()
     world:genCave(500, 2000)
     
     print("SPAWING PLAYER!")
+    
+    player = Player.new((windowWidth/2)-(tileSize/1.5), (windowHeight/2)-(tileSize/1.5), 8, playerTexture)
+    InventoryOpen = false
+    inventory = Inventory.new(30, 30, 800-30, 600-30)
+
     spawned = false
     while spawned == false do
         ChunkX = math.random(1, world.size)
@@ -92,14 +98,10 @@ function love.load()
         if world.chunks[ChunkY][ChunkX].topChunkData[SpawnY][SpawnX] == airTile then
             world.chunks[ChunkY][ChunkX].bottomChunkData[SpawnY][SpawnX] = spawnTile
             spawned = true
-            world.x = -((((ChunkX*ChunkSize)*tileSize)+(SpawnX*tileSize)-(windowWidth/2)))
-            world.y = -((((ChunkY*ChunkSize)*tileSize)+(SpawnY*tileSize)-(windowHeight/2)))
+            world.x = -(((ChunkX*ChunkSize)*tileSize)+(SpawnX*tileSize)-(windowWidth/2+(player.width/2)))
+            world.y = -(((ChunkY*ChunkSize)*tileSize)+(SpawnY*tileSize)-(windowHeight/2+(player.height/2)))-player.collisionPaddingY+2
         end
     end
-
-    player = Player.new((windowWidth/2)-(tileSize/1.5), (windowHeight/2)-(tileSize/1.5), 8, playerTexture)
-    InventoryOpen = false
-    inventory = Inventory.new(30, 30, 800-30, 600-30)
 
     print("STARTING WORLD GEN!")
 end
@@ -152,6 +154,9 @@ function love.keypressed(key)
         if key == "f3" then
             collisionMode = not collisionMode
         end
+        if key == "f4" then
+            noclip = not noclip
+        end
         if key == "/" then
             commandMode = true
         end
@@ -165,13 +170,10 @@ function love.draw()
     world:draw()
     love.graphics.print("FPS: "..fps)
 
-    if InventoryOpen == true then
-        inventory:draw()
-    end
-
     if debug == true then
         love.graphics.print("Player X:"..-math.floor(((world.x-player.x)/tileSize)/16)-1, 0, 15)
         love.graphics.print("Player Y:"..-math.floor(((world.y-player.y)/tileSize)/16)-1, 0, 30)
+        love.graphics.print("noclip:"..tostring(noclip), 0, 45)
 
         if commandMode == true then
             love.graphics.setColor(0.5, 0.5, 0.5, 0.5)
@@ -180,5 +182,10 @@ function love.draw()
             love.graphics.print(textBox, 0, windowHeight-25)
         end
     end
+
     player:draw()
+
+    if InventoryOpen == true then
+        inventory:draw()
+    end
 end

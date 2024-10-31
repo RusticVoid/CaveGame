@@ -50,10 +50,12 @@ function Chunk:update(WorldX, WorldY)
                         end
                     end
                 end
-                if collid(player.x, player.y, player.size, player.size, (WorldX+self.x*tileSize)+(x-1)*tileSize, (WorldY+self.y*tileSize)+(y-1)*tileSize, tileSize, tileSize) then
+                if (noclip == false) then
                     if self.topChunkData[y][x].hasCollision == true then
-                        world.x = prevPlayerX
-                        world.y = prevPlayerY
+                        if collid(player.x+player.collisionPaddingX, player.y+player.collisionPaddingY, player.width, player.height, ((WorldX+self.x*tileSize)+(x-1)*tileSize), (WorldY+self.y*tileSize)+(y-1)*tileSize, tileSize, tileSize) then
+                            world.x = prevPlayerX
+                            world.y = prevPlayerY
+                        end
                     end
                 end
             end
@@ -62,9 +64,9 @@ function Chunk:update(WorldX, WorldY)
 end
 
 function Chunk:draw(WorldX, WorldY)
-    love.graphics.setColor(1, 1, 1)
     for y = 1, self.size do
         for x = 1, self.size do
+            love.graphics.setColor(1, 1, 1)
             if self.topChunkData[y][x]:inWindow((WorldX+self.x*tileSize), (WorldY+self.y*tileSize), x-1, y-1) then
                 if self.topChunkData[y][x] == airTile then
                     love.graphics.draw(self.bottomChunkData[y][x].texture, (WorldX+self.x*tileSize)+(x-1)*tileSize, (WorldY+self.y*tileSize)+(y-1)*tileSize, 0, tileSize/16)
@@ -73,7 +75,7 @@ function Chunk:draw(WorldX, WorldY)
                 end
                 if debug == true then
                     if collisionMode == true then
-                        if self.hasCollision == true then
+                        if self.topChunkData[y][x].hasCollision == true then
                             love.graphics.setColor(1, 0, 0)
                             love.graphics.rectangle("line", ((WorldX+self.x*tileSize)+(x-1)*tileSize)+1, ((WorldY+self.y*tileSize)+(y-1)*tileSize)+1, tileSize-1, tileSize-1)
                         else
@@ -82,12 +84,7 @@ function Chunk:draw(WorldX, WorldY)
                         end
                     end
                 end
-                if debug == true then
-                    if chunkMode == true then
-                        love.graphics.setColor(1, 1, 1)
-                        love.graphics.rectangle("line", (WorldX+self.x*tileSize), (WorldY+self.y*tileSize), (self.size)*tileSize, (self.size)*tileSize)
-                    end
-                end
+                
             end
         end
     end

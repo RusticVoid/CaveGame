@@ -105,6 +105,12 @@ function World:draw()
         for x = 1, self.size do
             if self.chunks[y][x]:inWindow(self.x, self.y) then
                 self.chunks[y][x]:draw(self.x, self.y)
+                if debug == true then
+                    if chunkMode == true then
+                        love.graphics.setColor(1, 1, 1)
+                        love.graphics.rectangle("line", (self.x+self.chunks[y][x].x*tileSize), (self.y+self.chunks[y][x].y*tileSize), (self.size)*tileSize, (self.size)*tileSize)
+                    end
+                end
             end
         end
     end
