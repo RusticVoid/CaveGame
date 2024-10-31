@@ -2,7 +2,7 @@
 This is a survival mining game, -to be continued-
 
 ## What am I working on right now
-I've gotten done rewriting the engine and I'm working on an inventory system right now. I'm planning on getting the base game mechanics down for right now then I'll start adding more things like ores, biomes, structures, and more. I've also made an itch.io page you can find the here: https://homelessstudios.itch.io/subterranean
+I've gotten done rewriting the engine and I'm working on an inventory system right now. I'm planning on getting the base game mechanics down for right now then I'll start adding more things like ores, biomes, structures, and more. I've also made an itch.io page you can find here: https://homelessstudios.itch.io/subterranean
 
 ## How to run game:
 ### Windows
