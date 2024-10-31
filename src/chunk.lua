@@ -36,15 +36,55 @@ function Chunk:update(WorldX, WorldY)
                     if not (InventoryOpen == true) then
                         if love.mouse.isDown(1) then
                             if self.topChunkData[y][x].breakable == true then
-                                self.topChunkData[y][x] = airTile
+                                foundSlot = false
+                                for column = 0, 5 do
+                                    for row = 0, 10 do
+                                        for i = 0, inventory.stackSize do
+                                            if inventory.inventorySlots[column][row][i] == 0 then
+                                                if creativeMode == false then
+                                                    inventory.inventorySlots[column][row][i] = self.topChunkData[y][x]
+                                                end
+                                                self.topChunkData[y][x] = airTile
+                                                foundSlot = true
+                                                break
+                                            end
+                                        end
+                                        if foundSlot == true then
+                                            break
+                                        end
+                                    end
+                                    if foundSlot == true then
+                                        break
+                                    end
+                                end
                             end
                         end
                         if love.mouse.isDown(2) then
                             if self.topChunkData[y][x] == airTile then
-                                if player.selectedTile.topTile == true then
-                                    self.topChunkData[y][x] = player.selectedTile
-                                else 
-                                    self.bottomChunkData[y][x] = player.selectedTile
+                                foundSlot = false
+                                for column = 0, 5 do
+                                    for row = 0, 10 do
+                                        for i = 0, inventory.stackSize do
+                                            if inventory.inventorySlots[column][row][i] == player.selectedTile then
+                                                if creativeMode == false then
+                                                    inventory.inventorySlots[column][row][i] = 0
+                                                end
+                                                if player.selectedTile.topTile == true then
+                                                    self.topChunkData[y][x] = player.selectedTile
+                                                else 
+                                                    self.bottomChunkData[y][x] = player.selectedTile
+                                                end
+                                                foundSlot = true
+                                                break
+                                            end
+                                        end
+                                        if foundSlot == true then
+                                            break
+                                        end
+                                    end
+                                    if foundSlot == true then
+                                        break
+                                    end
                                 end
                             end
                         end

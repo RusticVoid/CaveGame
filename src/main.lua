@@ -16,6 +16,7 @@ function love.load()
     commandMode = false
     chunkMode = false
     collisionMode = false
+    creativeMode = false
     noclip = false
     textBox = {}
 
@@ -51,6 +52,18 @@ function love.load()
         end
         if option == "3" then
             WorldSize = 256
+        end
+        
+        print("")
+        print("Game Mode:")
+        print("1: default")
+        print("2: creative")
+        option = io.read()
+        if option == "1" then
+            creativeMode = false
+        end
+        if option == "2" then
+            creativeMode = true
         end
     else
         if option == "2" then
