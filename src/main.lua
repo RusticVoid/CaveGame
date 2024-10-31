@@ -4,6 +4,8 @@ require "world"
 require "tile"
 require "player"
 require "command"
+require "inventory"
+require "tiles"
 
 function love.load()
     
@@ -46,8 +48,10 @@ function love.load()
             WorldSize = 256
         end
     else
-        print("Give it a second!")
-        love.event.quit()
+        if option == "2" then
+            print("Give it a second!")
+            love.event.quit()
+        end
     end
 
     print("")
@@ -63,9 +67,7 @@ function love.load()
     InitTextures()
 
     print("INITIALIZING TILES!")
-    wallTile = Tile.new(wallTexture, true, true)
-    floorTile = Tile.new(floorTexture, false, false)
-    spawnTile = Tile.new(redGroundTexture, false, false)
+    InitTiles()
 
     print("CREATING WORLD!")
     world = World.new(WorldSize)
@@ -83,15 +85,17 @@ function love.load()
         SpawnX = math.random(1, ChunkSize)
         SpawnY = math.random(1, ChunkSize)
 
-        if world.chunks[ChunkY][ChunkX].chunkData[SpawnY][SpawnX] == floorTile then
-            world.chunks[ChunkY][ChunkX].chunkData[SpawnY][SpawnX] = spawnTile
+        if world.chunks[ChunkY][ChunkX].topChunkData[SpawnY][SpawnX] == airTile then
+            world.chunks[ChunkY][ChunkX].bottomChunkData[SpawnY][SpawnX] = spawnTile
             spawned = true
             world.x = -((((ChunkX*ChunkSize)*tileSize)+(SpawnX*tileSize)-(windowWidth/2)))
             world.y = -((((ChunkY*ChunkSize)*tileSize)+(SpawnY*tileSize)-(windowHeight/2)))
         end
     end
 
-    player = Player.new((windowWidth/2)-(tileSize/1.5), (windowHeight/2)-(tileSize/1.5), 8)
+    player = Player.new((windowWidth/2)-(tileSize/1.5), (windowHeight/2)-(tileSize/1.5), 8, playerTexture)
+    InventoryOpen = false
+    inventory = Inventory.new(30, 30, 800-30, 600-30)
 
     print("STARTING WORLD GEN!")
 end
@@ -122,6 +126,7 @@ function love.update(dt)
     end
 
     world:update()
+    inventory:update()
 end
 
 function love.keypressed(key)
@@ -155,6 +160,11 @@ end
 function love.draw()
     world:draw()
     love.graphics.print("FPS: "..fps)
+
+    if InventoryOpen == true then
+        inventory:draw()
+    end
+
     if debug == true then
         love.graphics.print("Player X:"..-math.floor(((world.x-player.x)/tileSize)/16)-1, 0, 15)
         love.graphics.print("Player Y:"..-math.floor(((world.y-player.y)/tileSize)/16)-1, 0, 30)

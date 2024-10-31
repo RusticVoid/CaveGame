@@ -11,6 +11,14 @@ function collid(x1, y1, sizeX1, sizeY1, x2, y2, sizeX2, sizeY2)
     return collided
 end
 
+function mouseCollid(x, y, sizeX, sizeY)
+    collided = false
+
+    collid(MouseX, MouseY, 1, 1, x, y, sizeX, sizeY)
+
+    return collided
+end
+
 function parseListString(stringList)
     local parsedCommand = {""}
     j = 1

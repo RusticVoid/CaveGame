@@ -29,7 +29,7 @@ function World:genCave(caveAmount, interations)
         CaveX = math.random(1, self.chunks[CaveChunkY][CaveChunkX].size)
         CaveY = math.random(1, self.chunks[CaveChunkY][CaveChunkX].size)
 
-        self.chunks[CaveChunkY][CaveChunkX].chunkData[CaveY][CaveX] = floorTile
+        self.chunks[CaveChunkY][CaveChunkX].topChunkData[CaveY][CaveX] = airTile
 
         for i = 0, interations do
             decision = math.random(1, 4)
@@ -81,10 +81,10 @@ function World:genCave(caveAmount, interations)
                     CaveY = 1
                 end
             end
-            self.chunks[CaveChunkY][CaveChunkX].chunkData[CaveY][CaveX] = floorTile
+            self.chunks[CaveChunkY][CaveChunkX].topChunkData[CaveY][CaveX] = airTile
 
-            if self.chunks[CaveChunkY][CaveChunkX].chunkData[CaveY][CaveX] == floorTile then
-                self.chunks[CaveChunkY][CaveChunkX].chunkData[CaveY][CaveX] = floorTile
+            if self.chunks[CaveChunkY][CaveChunkX].topChunkData[CaveY][CaveX] == airTile then
+                self.chunks[CaveChunkY][CaveChunkX].topChunkData[CaveY][CaveX] = airTile
             end
         end
     end
