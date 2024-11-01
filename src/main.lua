@@ -6,6 +6,7 @@ require "player"
 require "command"
 require "inventory"
 require "tiles"
+require "entity"
 
 function love.load()
     
@@ -80,7 +81,7 @@ function love.load()
     print("GENERATING CAVES!")
     world:genCave(500, 2000)
     
-    print("SPAWING PLAYER!")
+    print("SPAWNING PLAYER!")
     spawned = false
     while spawned == false do
         ChunkX = math.random(1, world.size)
@@ -101,7 +102,9 @@ function love.load()
     InventoryOpen = false
     inventory = Inventory.new(30, 30, 800-30, 600-30)
 
-    print("STARTING WORLD GEN!")
+    print("WORLD GEN DONE!")
+
+    entities = {}
 end
 
 function love.update(dt)
@@ -151,6 +154,12 @@ function love.keypressed(key)
         end
         if key == "f3" then
             collisionMode = not collisionMode
+        end
+        if key == "f4" then
+            InitTextures()
+        end
+        if key == "f5" then
+            table.insert(Entity.new(player.x, player.y, spawnTexture))
         end
         if key == "/" then
             commandMode = true

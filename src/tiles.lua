@@ -9,4 +9,6 @@ function InitTiles()
     redGround = Tile.new(redGroundTexture, false, false, false)
     floorTile = Tile.new(floorTexture, false, false, false)
     spawnTile = Tile.new(spawnTexture, false, false, false)
+
+    BorderTile = Tile.new(wallTexture, true, false, true)
 end
