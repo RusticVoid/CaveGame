@@ -27,9 +27,10 @@ function love.load()
     chunkMode = false
     collisionMode = false
     creativeMode = false
-    OnlineMode = true
     noclip = false
     textBox = {}
+
+    OnlineMode = true
 
     WorldSize = 64
 
@@ -164,25 +165,19 @@ function love.update(dt)
     inventory:update()
 
     if OnlineMode == true then
-        if os.clock() > now+1 then
-            ServerListen()
-            now = os.clock()
-        end
+        ServerListen()
     end
 end
 
 function ServerListen()
-    hostevent = enethost:service(1000)
-    server:send("playerinfo"..":"..-world.x+player.x..":"..-world.y+player.y)
+    hostevent = enethost:service(1)
     
     if hostevent then
         print("Server detected message type: " .. hostevent.type)
         if hostevent.type == "connect" then 
             print(hostevent.peer, "connected.")
-            server:send("playerinfo"..":"..-world.x+player.x..":"..-world.y+player.y)
         end
         if hostevent.type == "receive" then
-            print("Received message: ", hostevent.data, hostevent.peer)
             if hostevent.data:sub(1, 10) == "playerinfo" then
                 prasedInfo = {""}
                 j = 1
@@ -210,6 +205,13 @@ function ServerListen()
                 end
             end
         end
+    end
+
+    if (not ((lastX == -world.x+player.x) and (lastY == -world.y+player.y))) or (os.clock() > now+5) then
+        server:send("playerinfo"..":"..-world.x+player.x..":"..-world.y+player.y)
+        lastX = -world.x+player.x
+        lastY = -world.y+player.y
+        now = os.clock()
     end
 end
 
