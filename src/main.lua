@@ -6,6 +6,7 @@ require "player"
 require "command"
 require "inventory"
 require "tiles"
+require "entity"
 
 function love.load()
     
@@ -94,7 +95,7 @@ function love.load()
     print("GENERATING CAVES!")
     world:genCave(500, 2000)
     
-    print("SPAWING PLAYER!")
+    print("SPAWNING PLAYER!")
     
     player = Player.new((windowWidth/2)-(tileSize/1.5), (windowHeight/2)-(tileSize/1.5), 8, playerTexture)
     InventoryOpen = false
@@ -116,7 +117,9 @@ function love.load()
         end
     end
 
-    print("STARTING WORLD GEN!")
+    print("WORLD GEN DONE!")
+
+    entities = {}
 end
 
 function love.update(dt)
@@ -170,6 +173,12 @@ function love.keypressed(key)
         if key == "f4" then
             noclip = not noclip
         end
+        if key == "f5" then
+            InitTextures()
+        end
+        if key == "f6" then
+            table.insert(entities, Entity.new(player.x-world.x, player.y-world.y, entityTexture))
+        end
         if key == "/" then
             commandMode = true
         end
@@ -194,6 +203,10 @@ function love.draw()
             love.graphics.setColor(1, 1, 1, 1)
             love.graphics.print(textBox, 0, windowHeight-25)
         end
+    end
+
+    for i = 1, #entities do
+        entities[i]:draw()
     end
 
     player:draw()

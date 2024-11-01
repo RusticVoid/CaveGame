@@ -11,5 +11,5 @@ end
 
 function Entity:draw()
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.draw(self.texture, self.x, self.y, 0, tileSize/16)
+    love.graphics.draw(self.texture, world.x+self.x, world.y+self.y, 0, tileSize/16)
 end

@@ -3,6 +3,8 @@ function InitTextures()
     love.graphics.setDefaultFilter("nearest", "nearest")
 
     playerTexture = love.graphics.newImage("assets/entities/player.png")
+    
+    entityTexture = love.graphics.newImage("assets/entities/entity.png")
 
     airTexture = love.graphics.newImage("assets/tiles/air.png")
     floorTexture = love.graphics.newImage("assets/tiles/floor.png")
