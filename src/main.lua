@@ -8,7 +8,16 @@ require "inventory"
 require "tiles"
 require "entity"
 
+enet = require "enet"
+
+enethost = nil
+hostevent = nil
+clientpeer = nil
+
 function love.load()
+
+	enethost = enet.host_create()
+    server = enethost:connect("localhost:25619")
     
     windowWidth, windowHeight = love.window.getMode()
 
@@ -18,6 +27,7 @@ function love.load()
     chunkMode = false
     collisionMode = false
     creativeMode = false
+    OnlineMode = true
     noclip = false
     textBox = {}
 
@@ -120,6 +130,8 @@ function love.load()
     print("WORLD GEN DONE!")
 
     entities = {}
+
+    now = os.clock()
 end
 
 function love.update(dt)
@@ -131,7 +143,8 @@ function love.update(dt)
     windowWidth, windowHeight = love.window.getMode()
 
     prevPlayerX = world.x
-    prevPlayerY = world.y 
+    prevPlayerY = world.y
+    moved = false
     if commandMode == false then
         if love.keyboard.isDown("w") then
             world.y = world.y + player.speed * DeltaTime
@@ -149,6 +162,55 @@ function love.update(dt)
 
     world:update()
     inventory:update()
+
+    if OnlineMode == true then
+        if os.clock() > now+1 then
+            ServerListen()
+            now = os.clock()
+        end
+    end
+end
+
+function ServerListen()
+    hostevent = enethost:service(1000)
+    server:send("playerinfo"..":"..-world.x+player.x..":"..-world.y+player.y)
+    
+    if hostevent then
+        print("Server detected message type: " .. hostevent.type)
+        if hostevent.type == "connect" then 
+            print(hostevent.peer, "connected.")
+            server:send("playerinfo"..":"..-world.x+player.x..":"..-world.y+player.y)
+        end
+        if hostevent.type == "receive" then
+            print("Received message: ", hostevent.data, hostevent.peer)
+            if hostevent.data:sub(1, 10) == "playerinfo" then
+                prasedInfo = {""}
+                j = 1
+                for i = 12, string.len(hostevent.data) do
+                    if hostevent.data:sub(i, i) == ":" then
+                        j = j + 1
+                        prasedInfo[j] = ""
+                    else
+                        prasedInfo[j] = prasedInfo[j]..hostevent.data:sub(i, i)
+                    end
+                end
+
+                foundEntity = false
+                for i = 1, #entities do
+                    if tonumber(prasedInfo[3]) == i then
+                        entities[i].x = prasedInfo[1]
+                        entities[i].y = prasedInfo[2]
+                        foundEntity = true
+                        break
+                    end
+                end
+
+                if foundEntity == false then
+                    table.insert(entities, Entity.new(prasedInfo[1], prasedInfo[2], playerTexture))
+                end
+            end
+        end
+    end
 end
 
 function love.keypressed(key)
