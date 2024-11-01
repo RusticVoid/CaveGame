@@ -5,6 +5,7 @@ function InitTextures()
     playerTexture = love.graphics.newImage("assets/entities/player.png")
     
     entityTexture = love.graphics.newImage("assets/entities/entity.png")
+    runnerTexture = love.graphics.newImage("assets/entities/runner.png")
 
     airTexture = love.graphics.newImage("assets/tiles/air.png")
     floorTexture = love.graphics.newImage("assets/tiles/floor.png")
