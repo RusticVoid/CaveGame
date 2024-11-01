@@ -16,9 +16,6 @@ clientpeer = nil
 
 function love.load()
 
-	enethost = enet.host_create()
-    server = enethost:connect("localhost:25619")
-    
     windowWidth, windowHeight = love.window.getMode()
 
     fps = 0
@@ -30,7 +27,7 @@ function love.load()
     noclip = false
     textBox = {}
 
-    OnlineMode = true
+    OnlineMode = false
 
     WorldSize = 64
 
@@ -46,7 +43,8 @@ function love.load()
     print("")
     print("Pick a number for an option")
     print("1: Start")
-    print("2: Quit")
+    print("2: Multiplayer")
+    print("3: Quit")
     option = io.read()
 
     if option == "1" then
@@ -79,8 +77,20 @@ function love.load()
         end
     else
         if option == "2" then
-            print("Give it a second!")
-            love.event.quit()
+            print("")
+            print("Server IP:")
+            ServerIP = io.read()
+            print("")
+            print("Server PORT:")
+            ServerPORT = io.read()
+            OnlineMode = true
+            enethost = enet.host_create()
+            server = enethost:connect(ServerIP..":"..ServerPORT)
+        else
+            if option == "3" then
+                print("Give it a second!")
+                love.event.quit()
+            end
         end
     end
 
