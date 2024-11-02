@@ -15,9 +15,6 @@ hostevent = nil
 clientpeer = nil
 
 function love.load()
-
-    windowWidth, windowHeight = love.window.getMode()
-
     fps = 0
     debug = false
     commandMode = false
@@ -40,60 +37,88 @@ function love.load()
     print("LINKS:")
     print("Github: https://github.com/RusticVoid/Subterranean")
     print("Itch: https://homelessstudios.itch.io/subterranean")
-    print("")
-    print("Pick a number for an option")
-    print("1: Start")
-    print("2: Multiplayer")
-    print("3: Quit")
-    option = io.read()
 
-    if option == "1" then
+    MainMenu = true
+    while MainMenu do
         print("")
-        print("World Size:")
-        print("1: Small (64x64 in chunks, 1024x1024 in tiles)")
-        print("2: Medium (128x128 in chunks, 2048x2048 in tiles)")
-        print("3: Large (256x256 in chunks, 4096x4096 in tiles)")
+        print("Pick a number for an option")
+        print("1: Start")
+        print("2: Multiplayer")
+        print("3: Settings")
+        print("4: Quit")
         option = io.read()
+
         if option == "1" then
-            WorldSize = 64
-        end
-        if option == "2" then
-            WorldSize = 128
-        end
-        if option == "3" then
-            WorldSize = 256
-        end
-        
-        print("")
-        print("Game Mode:")
-        print("1: default")
-        print("2: creative")
-        option = io.read()
-        if option == "1" then
-            creativeMode = false
-        end
-        if option == "2" then
-            creativeMode = true
-        end
-    else
-        if option == "2" then
             print("")
-            print("Server IP:")
-            ServerIP = io.read()
-            print("")
-            print("Server PORT:")
-            ServerPORT = io.read()
-            OnlineMode = true
-            enethost = enet.host_create()
-            server = enethost:connect(ServerIP..":"..ServerPORT)
-        else
+            print("World Size:")
+            print("1: Small (64x64 in chunks, 1024x1024 in tiles)")
+            print("2: Medium (128x128 in chunks, 2048x2048 in tiles)")
+            print("3: Large (256x256 in chunks, 4096x4096 in tiles)")
+            option = io.read()
+            if option == "1" then
+                WorldSize = 64
+            end
+            if option == "2" then
+                WorldSize = 128
+            end
             if option == "3" then
-                print("Give it a second!")
-                love.event.quit()
+                WorldSize = 256
+            end
+            
+            print("")
+            print("Game Mode:")
+            print("1: default")
+            print("2: creative")
+            option = io.read()
+            if option == "1" then
+                creativeMode = false
+            end
+            if option == "2" then
+                creativeMode = true
+            end
+            MainMenu = false
+        else
+            if option == "2" then
+                print("")
+                print("Server IP:")
+                ServerIP = io.read()
+                print("")
+                print("Server PORT:")
+                ServerPORT = io.read()
+                OnlineMode = true
+                enethost = enet.host_create()
+                server = enethost:connect(ServerIP..":"..ServerPORT)
+                MainMenu = false
+            else
+                if option == "3" then
+                    print("")
+                    print("Screen resolution:")
+                    print("1: 800x600")
+                    print("2: 1200x720")
+                    option = io.read()
+
+                    if option == "1" then
+                        love.window.setMode(800, 600)
+                    end
+                    if option == "2" then
+                        love.window.setMode(1200, 720)
+                    end
+                else
+                    if option == "4" then
+                        print("Give it a second!")
+                        MainMenu = false
+                        love.event.quit()
+                    else
+                        MainMenu = false
+                    end
+                end
             end
         end
     end
 
+    windowWidth, windowHeight = love.window.getMode()
+
+    GenStart = os.clock()
     print("")
     print("STARTING WORLD GEN!")
 
@@ -115,6 +140,15 @@ function love.load()
 
     print("GENERATING CAVES!")
     world:genCave(500, 2000)
+
+    print("GENERATING BIOMES!")
+    world:genBiome(WorldSize, 1000)
+
+    print("GENERATING ORES!")
+    world:genOre(WorldSize*16, 50)
+
+    print("CLEANING WORLD!")
+    world:genClean(100)
     
     print("SPAWNING PLAYER!")
     
@@ -138,7 +172,10 @@ function love.load()
         end
     end
 
+    GenDone = os.clock()
     print("WORLD GEN DONE!")
+    print("COMPLETED IN: "..GenDone - GenStart)
+    print("")
 
     entities = {}
 
@@ -232,7 +269,9 @@ function love.keypressed(key)
         end
     end
     if key == "i" then
-        InventoryOpen = not InventoryOpen
+        if commandMode == false then
+            InventoryOpen = not InventoryOpen
+        end
     end
     if key == "f1" then
         debug = not debug
@@ -249,9 +288,11 @@ function love.keypressed(key)
         end
         if key == "f5" then
             InitTextures()
+            print("TEXTURES RELOADED!")
         end
         if key == "f6" then
             table.insert(entities, Entity.new(player.x-world.x, player.y-world.y, entityTexture))
+            print("SPAWNED ENTITY!")
         end
         if key == "/" then
             commandMode = true

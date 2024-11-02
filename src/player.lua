@@ -13,7 +13,9 @@ function Player.new(x, y, speed, texture)
     self.collisionPaddingX = 5
     self.collisionPaddingY = 3
     self.size = tileSize/1.5
-    self.selectedTile = wallTile
+    self.selectedTile = airTile
+    self.selectedTileAmount = 0
+    self.holdingTile = false
     return self
 end
 

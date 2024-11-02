@@ -19,5 +19,9 @@ function InitTextures()
     redGroundTexture = love.graphics.newImage("assets/tiles/redGround.png")
     redWallTexture = love.graphics.newImage("assets/tiles/redWall.png")
 
+    
+    pupGroundTexture = love.graphics.newImage("assets/tiles/pupGround.png")
+    pupWallTexture = love.graphics.newImage("assets/tiles/pupWall.png")
+
     spawnTexture = love.graphics.newImage("assets/tiles/spawn.png")
 end

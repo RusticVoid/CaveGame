@@ -36,26 +36,36 @@ function Chunk:update(WorldX, WorldY)
                     if not (InventoryOpen == true) then
                         if love.mouse.isDown(1) then
                             if self.topChunkData[y][x].breakable == true then
-                                foundSlot = false
-                                for column = 0, 5 do
-                                    for row = 0, 10 do
-                                        for i = 0, inventory.stackSize do
-                                            if inventory.inventorySlots[column][row][i] == 0 then
-                                                if creativeMode == false then
-                                                    inventory.inventorySlots[column][row][i] = self.topChunkData[y][x]
-                                                end
-                                                self.topChunkData[y][x] = airTile
+                                if creativeMode == false then
+                                    foundSlot = false
+                                    for column = 0, 5 do
+                                        for row = 0, 10 do
+                                            if inventory.inventorySlots[column][row][0] == 0 then
+                                                inventory.inventorySlots[column][row][0] = self.topChunkData[y][x]
                                                 foundSlot = true
+                                                break
+                                            else
+                                                if inventory.inventorySlots[column][row][0] == self.topChunkData[y][x] then
+                                                    for i = 0, inventory.stackSize do
+                                                        if inventory.inventorySlots[column][row][i] == 0 then
+                                                            inventory.inventorySlots[column][row][i] = self.topChunkData[y][x]
+                                                            foundSlot = true
+                                                            break
+                                                        end
+                                                    end
+                                                end
+                                            end
+                                            if foundSlot == true then
                                                 break
                                             end
                                         end
                                         if foundSlot == true then
+                                            self.topChunkData[y][x] = airTile
                                             break
                                         end
                                     end
-                                    if foundSlot == true then
-                                        break
-                                    end
+                                else
+                                    self.topChunkData[y][x] = airTile
                                 end
                             end
                         end

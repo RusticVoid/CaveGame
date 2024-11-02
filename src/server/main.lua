@@ -28,7 +28,6 @@ function love.update(dt)
 			UpdatePlayers(tostring(hostevent.data), hostevent.peer)
 		end
 	end
-	
 end
 
 function love.draw()
