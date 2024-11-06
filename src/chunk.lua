@@ -84,6 +84,7 @@ function Chunk:update(WorldX, WorldY)
                                                 else 
                                                     self.bottomChunkData[y][x] = player.selectedTile
                                                 end
+                                                now = os.clock()
                                                 foundSlot = true
                                                 break
                                             end
@@ -94,6 +95,22 @@ function Chunk:update(WorldX, WorldY)
                                     end
                                     if foundSlot == true then
                                         break
+                                    end
+                                end
+                            else
+                                if self.topChunkData[y][x] == craftingStation then
+                                    OpenCraftingStation()
+                                end
+                                if os.clock() > now+0.1 then
+                                    now = os.clock()
+                                    if self.topChunkData[y][x] == nukeTile then
+                                        self.topChunkData[y][x] = airTile
+                                        radius = 10
+                                        for radY = 0, radius do
+                                            for radX = 0, radius do
+                                                --self.topChunkData[(y-(radius/2))+radY][(x-(radius/2))+radX] = airTile
+                                            end
+                                        end
                                     end
                                 end
                             end
@@ -121,6 +138,7 @@ function Chunk:draw(WorldX, WorldY)
                 if self.topChunkData[y][x] == airTile then
                     love.graphics.draw(self.bottomChunkData[y][x].texture, (WorldX+self.x*tileSize)+(x-1)*tileSize, (WorldY+self.y*tileSize)+(y-1)*tileSize, 0, tileSize/16)
                 else
+                    love.graphics.draw(self.bottomChunkData[y][x].texture, (WorldX+self.x*tileSize)+(x-1)*tileSize, (WorldY+self.y*tileSize)+(y-1)*tileSize, 0, tileSize/16)
                     love.graphics.draw(self.topChunkData[y][x].texture, (WorldX+self.x*tileSize)+(x-1)*tileSize, (WorldY+self.y*tileSize)+(y-1)*tileSize, 0, tileSize/16)
                 end
                 if debug == true then
@@ -134,7 +152,6 @@ function Chunk:draw(WorldX, WorldY)
                         end
                     end
                 end
-                
             end
         end
     end

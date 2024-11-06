@@ -1,12 +1,18 @@
 require "utils"
 require "textures"
 require "world"
-require "tile"
 require "player"
 require "command"
 require "inventory"
-require "tiles"
 require "entity"
+
+require "tile"
+require "tiles"
+
+require "item"
+require "items"
+
+require "craftingStationUI"
 
 enet = require "enet"
 
@@ -22,6 +28,7 @@ function love.load()
     collisionMode = false
     creativeMode = false
     noclip = false
+    otherUI = false
     textBox = {}
 
     OnlineMode = false
@@ -134,6 +141,9 @@ function love.load()
     print("INITIALIZING TILES!")
     InitTiles()
 
+    print("INITIALIZING ITEMS!")
+    InitItems()
+
     print("CREATING WORLD!")
     world = World.new(WorldSize)
     world:genWorld()
@@ -148,7 +158,7 @@ function love.load()
     world:genOre(WorldSize*16, 50)
 
     print("CLEANING WORLD!")
-    world:genClean(100)
+    --world:genClean(100)
     
     print("SPAWNING PLAYER!")
     
@@ -171,6 +181,13 @@ function love.load()
             world.y = -(((ChunkY*ChunkSize)*tileSize)+(SpawnY*tileSize)-(windowHeight/2+(player.height/2)))-player.collisionPaddingY+2
         end
     end
+
+    if SpawnX-1 < 1 then
+        world.chunks[ChunkY][ChunkX].topChunkData[SpawnY][SpawnX+1] = craftingStation
+    else
+        world.chunks[ChunkY][ChunkX].topChunkData[SpawnY][SpawnX-1] = craftingStation
+    end
+    CraftingStationInit()
 
     GenDone = os.clock()
     print("WORLD GEN DONE!")
@@ -210,6 +227,7 @@ function love.update(dt)
 
     world:update()
     inventory:update()
+    UpdateCraftingStation()
 
     if OnlineMode == true then
         ServerListen()
@@ -264,13 +282,15 @@ end
 
 function love.keypressed(key)
     if key == "escape" then
+        CloseCraftingStation()
         if InventoryOpen == true then
             InventoryOpen = false
         end
     end
     if key == "i" then
-        if commandMode == false then
+        if (commandMode == false) and (otherUI == false) then
             InventoryOpen = not InventoryOpen
+            craftingStationOpen = false
         end
     end
     if key == "f1" then
@@ -328,5 +348,13 @@ function love.draw()
 
     if InventoryOpen == true then
         inventory:draw()
+    end
+
+    DrawCraftingStationUI()
+
+    love.graphics.setColor(1, 1, 1, 1)
+    if not (player.selectedTileAmount == 0) then
+        love.graphics.draw(player.selectedTile.texture, MouseX-10, MouseY-10, 0, tileSize/16)
+        love.graphics.print(player.selectedTileAmount, MouseX-10, MouseY-10)
     end
 end

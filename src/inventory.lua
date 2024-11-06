@@ -34,6 +34,7 @@ function Inventory.new(x, y, width, height)
         self.inventorySlots[0][7][0] = floorTile
         self.inventorySlots[0][8][0] = pupGround
         self.inventorySlots[0][9][0] = pupWall
+        self.inventorySlots[0][10][0] = craftingStation
     end
     
     return self
@@ -47,8 +48,13 @@ function Inventory:update()
                     if love.mouse.isDown(1) then
                         for i = 0, self.stackSize do
                             if not (self.inventorySlots[column][row][i] == 0) then
-                                player.selectedTile = self.inventorySlots[column][row][i]
-                                InventoryOpen = false
+                                if self.inventorySlots[column][row][i].IsItem == true then
+                                    player.selectedTile = airTile
+                                else
+                                    player.selectedTile = self.inventorySlots[column][row][i]
+                                    InventoryOpen = false
+                                    CloseCraftingStation()
+                                end
                                 break
                             end
                         end
@@ -100,6 +106,7 @@ function Inventory:update()
                                             end
                                             break
                                         end
+                                        break
                                     end
                                 end
                             end
@@ -129,16 +136,11 @@ function Inventory:draw()
                     stackAmount = stackAmount + 1
                     love.graphics.setColor(1, 1, 1, 1)
                     love.graphics.draw(inventory.inventorySlots[column][row][i].texture, self.x+(row*(self.slotSize+self.slotSpacing))+self.slotPadding+10, self.y+(column*(self.slotSize+self.slotSpacing))+self.slotPadding+10, 0, tileSize/16)    
-                    love.graphics.print(stackAmount, self.x+(row*(self.slotSize+self.slotSpacing))+self.slotPadding+10, self.y+(column*(self.slotSize+self.slotSpacing))+self.slotPadding+10)
-                end
+                 end
             end
+            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.print(stackAmount, self.x+(row*(self.slotSize+self.slotSpacing))+self.slotPadding+10, self.y+(column*(self.slotSize+self.slotSpacing))+self.slotPadding+10)
         end
-    end
-
-    love.graphics.setColor(1, 1, 1, 1)
-    if not (player.selectedTileAmount == 0) then
-        love.graphics.draw(player.selectedTile.texture, MouseX-10, MouseY-10, 0, tileSize/16)
-        love.graphics.print(player.selectedTileAmount, MouseX-10, MouseY-10)
     end
 
     love.graphics.setColor(1, 1, 1, 1)

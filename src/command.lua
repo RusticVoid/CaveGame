@@ -55,4 +55,31 @@ function doCommand()
             end
         end
     end
+
+    if parsedCommand[1] == "/give" then
+        if parsedCommand[2] == "nuke" then
+            GiveTile = nukeTile
+        end
+
+        foundInvSlot = false
+        for column = 0, 5 do
+            for row = 0, 10 do
+                if inventory.inventorySlots[column][row][0] == 0 then
+                    inventory.inventorySlots[column][row][0] = GiveTile
+                    break
+                else
+                    if inventory.inventorySlots[column][row][0] == player.selectedTile then
+                        for i = 0, inventory.stackSize do
+                            if inventory.inventorySlots[column][row][i] == 0 then
+                                inventory.inventorySlots[column][row][i] = GiveTile
+                                foundInvSlot = true
+                                break
+                            end
+                        end
+                    end
+                end
+            end
+            break
+        end
+    end
 end

@@ -4,7 +4,6 @@ function InitTiles()
     floorTile = Tile.new(floorTexture, false, false, false)
     spawnTile = Tile.new(spawnTexture, false, false, false)
 
-
     redWall = Tile.new(redWallTexture, true, true, true)
     redGround = Tile.new(redGroundTexture, false, false, false)
     RedBiome = {redWall, redGround}
@@ -20,6 +19,12 @@ function InitTiles()
     
     rednite = Tile.new(redniteTexture, true, true, true)
     bluenite = Tile.new(blueniteTexture, true, true, true)
+    uranium = Tile.new(uraniumTexture, true, true, true)
+    iron = Tile.new(ironTexture, true, true, true)
 
-    Ores = {rednite, bluenite}
+    Ores = {rednite, bluenite, uranium, iron}
+
+    craftingStation = Tile.new(craftingStationTexture, true, true, true)
+
+    nukeTile = Tile.new(nukeTexture, true, true, true)
 end
