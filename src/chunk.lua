@@ -119,12 +119,19 @@ function Chunk:update(WorldX, WorldY)
                 end
                 if (noclip == false) then
                     if self.topChunkData[y][x].hasCollision == true then
-                        if collid(player.x+player.collisionPaddingX, player.y+player.collisionPaddingY, player.width, player.height, ((WorldX+self.x*tileSize)+(x-1)*tileSize), (WorldY+self.y*tileSize)+(y-1)*tileSize, tileSize, tileSize) then
+                        if collid(player.x+player.collisionPaddingX, player.y+player.collisionPaddingY, player.width, player.height, ((WorldX+self.x*tileSize)+(x-1)*tileSize), ((WorldY+self.y*tileSize)+(y-1)*tileSize), tileSize, tileSize) then
                             if up == true then
-                                
+                                world.y = prevPlayerY
                             end
-                            world.x = prevPlayerX
-                            world.y = prevPlayerY
+                            if left == true then
+                                world.x = prevPlayerX
+                            end
+                            if down == true then
+                                world.y = prevPlayerY
+                            end
+                            if right == true then
+                                world.x = prevPlayerX
+                            end
                         end
                     end
                 end
