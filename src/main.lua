@@ -209,18 +209,26 @@ function love.update(dt)
 
     prevPlayerX = world.x
     prevPlayerY = world.y
-    moved = false
+    up = false
+    left = false
+    down = false
+    right = false
+
     if commandMode == false then
         if love.keyboard.isDown("w") then
+            up = true
             world.y = world.y + player.speed * DeltaTime
         end
         if love.keyboard.isDown("a") then
+            left = true
             world.x = world.x + player.speed * DeltaTime
         end
         if love.keyboard.isDown("s") then
+            down = true
             world.y = world.y - player.speed * DeltaTime
         end
         if love.keyboard.isDown("d") then
+            right = true
             world.x = world.x - player.speed * DeltaTime
         end
     end
