@@ -1,3 +1,7 @@
+----------------------------
+-- TURN THIS INTO A CLASS --
+----------------------------
+
 function CraftingStationInit()
     craftingStationOpen = false
 
